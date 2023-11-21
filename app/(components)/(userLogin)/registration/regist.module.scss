@@ -1,0 +1,173 @@
+.wrapper{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-color);
+}
+
+.registration_form{
+    width: 500px;
+    height: auto;
+    padding-bottom: 50px;
+    border-radius: 35px;
+    background: var(--window-color);
+    box-shadow: var(--window-shadow);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.title{
+    color: var(--redirect-link-color);
+    font-size: 32px;
+    font-weight: 600;
+    margin-top: 50px;
+}
+
+.from_container{
+    margin-top: 0px;
+}
+
+.eye_icon{
+    position: absolute;
+    color: var(--redirect-link-color);
+    margin-left: -40px;
+    margin-top: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.email_field, .password_field, .user_name_field{
+    width: 276px;
+    height: 41px;
+    background-color: rgba(0, 0, 0, 0);
+    border: var(--field-color);
+    border-radius: 15px;
+    margin-top: -2px;
+    outline: none;
+    transition: .4s ease;
+    color: var(--redirect-link-color);
+    font-size: 15px;
+    padding-left: 20px;
+    &:focus{
+        border: var(--field-color-active);
+    }
+}
+
+.email_block, .password_block, .user_name_block{
+    position: relative;
+    p:not(.error_text){
+        color: var(--redirect-link-color);
+        font-size: 13px;
+        font-weight: 400;
+        margin-left: 10px;
+    }
+}
+
+.password_block, .email_block{
+    margin-top: 32px;
+}
+
+.error_text{
+    color: red;
+    font-size: 13px;
+    font-weight: 400;
+    margin-left: 10px;
+    padding: 0 5px;
+}
+
+.password_text, .error_password_text{
+    color: var(--desc-error-password-color);
+    background-color: none;
+    font-size: 13px;
+    font-weight: 400;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+
+.error_password_text{
+    color: red;
+}
+
+
+.button{
+    width: 296px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: #00C851;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    box-shadow: 0px 0px 10px rgba(0, 200, 81, 0.50);
+    margin-top: 25px;
+    transition: .4s ease;
+    cursor: pointer;
+    &:hover{
+        transform: scale(.98);
+    }
+    &:disabled{
+        background-color: #067a34;
+        color: rgb(170, 170, 170);
+        box-shadow: 0px 0px 20px rgba(2, 128, 53, 0.5);
+    }
+}
+
+@media (max-width: 564px) {
+    .wrapper{
+        justify-content: none;
+    }
+    .registration_form{
+        margin: 0 auto;
+        width: calc(100% - 64px) !important;
+    }
+}
+
+@media (max-width: 450px) {
+    .title{
+        font-size: 26px;
+    }
+    .email_field, .password_field, .user_name_field{
+        width: 230px;
+        height: 41px;
+        color: var(--redirect-link-color);
+        font-size: 13px;
+        padding-left: 20px;
+    }
+    .button{
+        width: 250px;
+    }
+}
+@media (max-width: 360px) {
+    .title{
+        font-size: 26px;
+    }
+    .email_field, .password_field, .user_name_field{
+        width: 160px;
+        font-size: 13px;
+    }
+    .button{
+        width: 180px;
+    }
+    .funс_block{
+        display: flex;
+        flex-flow: column;
+    }
+    #form{
+        display: flex;
+        flex-flow: column;
+        align-items: center; 
+    }
+    .redirect_link{
+        text-align: center;
+        &:last-child{
+            margin-left: 0px !important;
+            margin-top: 10px;
+        }
+    }
+    .password_text, .error_password_text, .error_text{
+        font-size: 10px;
+    }
+}
