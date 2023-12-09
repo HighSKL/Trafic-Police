@@ -41,6 +41,7 @@
     justify-content: center;
     flex-flow: column;
 }
+
 .button{
     max-width: 400px;
     margin: 0 auto;
@@ -97,4 +98,18 @@
 
 .field_title{
     max-width: 300px;
+}
+
+.people_type_container{
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.people_type_block{
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    gap: 5px;
 }

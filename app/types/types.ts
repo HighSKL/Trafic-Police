@@ -34,3 +34,25 @@ export type CarItemFindCarType = {
     brand: string,
     model: string
 }
+
+export type FormikAddPeopleType = {
+    OwnCar?: string;
+    Email?: boolean;
+    OwnerName?: string;
+    Ownerphonenumber?: string;
+    PassportSeries?: string;
+    PassportNumber?: string;
+    WhoPassportGived?: string;
+    DatePassportGived?: string;
+    DriverlicenseNumber?: string;
+    DriverlicenseGivedData?: string;
+    Organization_address?: string;
+    Organization_name?: string;
+    DirectorName?: string;
+    Directorphonenumber?: string;
+}
+
+export type KeyValue = {
+    id: number;
+    name: string;
+}
