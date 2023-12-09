@@ -3,13 +3,13 @@ import style from './addcar.module.scss';
 import { Formik, Form, Field } from 'formik';
 import { validator } from '@/app/modules/validator';
 import Link from 'next/link';
-import { GetBodyModels, GetBrands, GetCompanyModels, RegCar } from '@/app/modules/apiservice';
 import { useEffect, useRef, useState } from 'react';
-import { Brands, setBrands } from '@/app/(storage)/brandsdata';
+import { Brands } from '@/app/(storage)/brandsdata';
 import { useRouter } from 'next/navigation';
 import { Models, setModels } from '@/app/(storage)/modelsdata';
-import { BodyModels, setBodyModels } from '@/app/(storage)/bodymodelsdata';
+import { BodyModels } from '@/app/(storage)/bodymodelsdata';
 import { DataFetcher } from '@/app/modules/classes';
+import { RegCar } from '@/app/modules/apiservice';
 
 export default function AddCar() {
 
@@ -17,60 +17,60 @@ export default function AddCar() {
     const selectRef = useRef(null);
     const DataFetcherObject = new DataFetcher()
 
-    const [fieldsErrors, setFieldsErrors] = useState<string[]>([''])
+    const [fieldsErrors, setFieldsErrors] = useState<string[]>([])
+
+    //@ts-ignore
+    // window.fl = fieldsErrors
+
 
     useEffect(()=>{
         (async()=>{
-            if(!Brands){
-                const brands = await GetBrands().then(res=>res.data)
-                setBrands(brands)
-                // await getBodyModels()
-                await getModels(brands[0].name)
-            } else{
-                // await getBodyModels()
-                // await DataFetcherObject.getBodyModels()
-            }   
-                // await getModels(Brands[0])
+            // initialize lists
+            if(!Brands) await DataFetcherObject.getBrands()
+
+            else{
+                if(Brands[0]!=='---')
+                    await DataFetcherObject.getModels(Brands[0])
+            }
+
+            if(!BodyModels) await DataFetcherObject.getBodyModels()
+            //
+
         })()
     },[])
 
-    const getBodyModels = async () => {
-        const bodyModels = await GetBodyModels().then(res=>res.data)
-        setBodyModels(bodyModels)
-        router.refresh()
-    }
-
-    const getModels = async (brandName:string) => {
-        const models = await GetCompanyModels(brandName).then(res=>res.data)
-        setModels(models)
-        router.refresh()
-    }
-
     const changeBrand = async () => {
-        if(selectRef.current)
-            getModels(selectRef.current['value'])
+        if(selectRef.current&&selectRef.current['value'] !== '---')
+            await DataFetcherObject.getModels(selectRef.current['value'])
+        else if(selectRef.current&&selectRef.current['value'] === '---'){
+            setModels([])
+            router.refresh()
+        }
+    
     }
 
     const fields = [
         {title: "Гос. номер", name: "StateNumber", validate: /(^[АВЕКМНОРСТУХ][0-9][0-9][0-9][АВЕКМНОРСТУХ][АВЕКМНОРСТУХ]$|^[АВЕКМНОРСТУХ][0-9][0-9][0-9]$|^[0-9][0-9][0-9][0-9][АВЕКМНОРСТУХ][АВЕКМНОРСТУХ]$|^[АВЕКМНОРСТУХ][АВЕКМНОРСТУХ][0-9][0-9][0-9]$)/},
         {title: "Номер региона", name: "RegionNumber", validate: /^([1-9][0-9][0-9]|0[1-9]|[1-9][0-9])$/},
-        {title: "Марка авто", name: "Mark", list: Brands, isBrands: true},
-        {title: "Модель авто", name: "CarModel", list: Models},
+        {title: "Марка авто", name: "Brand", list: Brands, isBrands: true},
+        {title: "Модель авто", name: "CarModel", list: Models, validate: /^(?!---|\s)(\S)/},
         {title: "Номер кузова VIN", name: "BodyNumber", validate: /\S/},
         {title: "Номер шасси", name: "ChassisNumber", validate: /\S/},
         {title: "Номер двигателя", name: "EngineNumber", validate: /\S/},
-        {title: "Модель кузова", name: "BodyModel", list: BodyModels},
+        {title: "Модель кузова", name: "BodyModel", list: BodyModels, validate: /^(?!---|\s)(\S)/},
         {title: "Цвет автомобиля", name: "Color", validate: /\S/},
         {title: "Объем двигателя", name: "EngineCapacity", validate: /\d/},
         {title: "Мощность двигателя", name: "EnginePower", validate: /\d/},
-        {title: "Расположение руля", name: "WheelLocation", list: ["Левый", "Правый"]},
-        {title: "Привод", name: "WheelDrive", list: ["Передний", "Задний", "Полный"]},
+        {title: "Расположение руля", name: "WheelLocation", list: ["---", "Левый", "Правый"], validate: /^(?!---|\s)(\S)/},
+        {title: "Привод", name: "WheelDrive", list: ["---", "Передний", "Задний", "Полный"], validate: /^(?!---|\s)(\S)/},
         {title: "Год выпуска", name: "YearManufactured", validate: /^([1][789][0-9][0-9]|[2][0][0-2][0-4])$/},
         {title: "Дата постановки на учет", name: "DateRegistration", date: true, validate: /./},
-        {title: "Номер талона ТО", name: "InspectionTicketId"},
-        {title: "Дата выдачи талона ТО", name: "DateTicketGived", date: true, validate: /./},
-        {title: "Налог на авто за год", name: "CarTaxPerYear", validate: /\d/}
+        {title: "Годовой налог на авто", name: "CarTaxPerYear", validate: /\d/}   
     ]
+
+    // {title: "Номер талона ТО", name: "InspectionTicketId"},
+    // {title: "Дата выдачи талона ТО", name: "DateTicketGived", date: true, validate: /./},
+    
 
     function renderErrors(elemName: string){
         if(fieldsErrors.includes(elemName)){
@@ -86,8 +86,10 @@ export default function AddCar() {
             setFieldsErrors(newState)
             router.refresh()
         }
-        else
+        else{
             setFieldsErrors(await [...fieldsErrors.filter(err=>err!==errorName)])
+        }
+            
     }
 
     const fieldsRender = fields.map((elem)=>(
@@ -124,20 +126,19 @@ export default function AddCar() {
                     </div>
                     <h1 className={style.title}>Добавить авто</h1>
                     <Formik
-                        initialValues={{ StateNumber: '', RegionNumber: '1', Mark: '', CarModel: '', BodyNumber: '1', ChassisNumber: '1',
-                        EngineNumber: '1', BodyModel: '',Color: '', EngineCapacity: '1', EnginePower: '1', WheelLocation: '', WheelDrive: '',
-                        YearManufactured: '', DateRegistration: '', InspectionTicketId: '12', DateTicketGived: '12', CarTaxPerYear: '400' }}
+                        initialValues={{ StateNumber: 'О213ЕА', RegionNumber: '54', Brand: '', CarModel: '', BodyNumber: '1', ChassisNumber: '1',
+                        EngineNumber: '1', BodyModel: '',Color: 'Серый', EngineCapacity: '1', EnginePower: '1', WheelLocation: '', WheelDrive: '',
+                        YearManufactured: '1965', DateRegistration: '', InspectionTicketId: '12', DateTicketGived: '12', CarTaxPerYear: '400' }}
                         onSubmit={(values:any) => {
                             fields.forEach((field)=>{
                                 if(field.validate)
-                                    // validator(field.validate, field.name, fieldsErrors, setFieldsErrors,values[`${field.name}`])
                                     validator(field.validate, field.name, changeError,values[`${field.name}`])
-                                    
                             })
-                            // if(validator(, FieldsErrors.StateNumber, values.StateNumber))
-                            // RegCar(values.StateNumber, parseInt(values.RegionNumber), values.Mark, values.CarModel, parseInt(values.BodyNumber), parseInt(values.ChassisNumber),
-                            //     parseInt(values.EngineNumber), values.BodyModel, values.Color, parseInt(values.EngineCapacity), parseInt(values.EnginePower), values.WheelLocation, values.WheelDrive,
-                            //     values.YearManufactured, values.DateRegistration, parseInt(values.InspectionTicketId), parseInt(values.DateTicketGived), parseInt(values.CarTaxPerYear))
+                            if(fieldsErrors.length === 0){
+                                RegCar(values.StateNumber, parseInt(values.RegionNumber), values.CarModel, parseInt(values.BodyNumber), parseInt(values.ChassisNumber),
+                                parseInt(values.EngineNumber), values.BodyModel, values.Color, parseInt(values.EngineCapacity), parseInt(values.EnginePower), values.WheelLocation, values.WheelDrive,
+                                values.YearManufactured, values.DateRegistration, parseInt(values.CarTaxPerYear))
+                            }
                         }}
                     >
                         {() => (
