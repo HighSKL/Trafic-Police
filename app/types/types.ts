@@ -1,38 +1,58 @@
 export type Car = {
-    body_model: string|null,
-    body_number: number|null,
-    brand: string|null,
-    car_img: string|null,
-    car_tax_per_year: number|null,
-    chassis_number: number|null,
-    color: string|null,
-    date_registration: number|null,
-    engine_capacity: number|null,
-    engine_number: number|null,
-    engine_power: number|null,
-    id: number|null,
-    inspection_ticket_id: number|null,
-    model: string|null,
-    owner_id: number|null,
-    region_number: string|null,
-    state_number: string|null,
-    wheel_drive: string|null,
-    wheel_location: string|null,
-    year_manufactured: number|null
+    body_model: string|null;
+    body_number: number|null;
+    brand: string|null;
+    car_img: string|null;
+    car_tax_per_year: number|null;
+    chassis_number: number|null;
+    color: string|null;
+    date_registration: number|null;
+    engine_capacity: number|null;
+    engine_number: number|null;
+    engine_power: number|null;
+    id: number|null;
+    inspection_ticket_id: number|null;
+    model: string|null;
+    owner_id: number|null;
+    region_number: string|null;
+    state_number: string|null;
+    wheel_drive: string|null;
+    wheel_location: string|null;
+    year_manufactured: number|null;
+}
+
+export type FieldCar = {
+    title: string;
+    name: string;
+    errorMessage: string;
+    validate?: RegExp;
+    list?:  string[]|null;
+    date?: boolean;
+    isBrands?: boolean;
+    changeFieldFunc?: any
 }
 
 export type PersonFieldType = {
-    title: string,
-    name: string,
-    findCarNeed?: boolean
-    categories?: Array<string>
+    title: string;
+    name: string;
+    errorMessage: string;
+    findCarNeed?: boolean;
+    findOrganizationNeed?: boolean;
+    categories?: Array<string>;
+    validate?: RegExp;
+    date?: boolean;
 }
 
 export type CarItemFindCarType = {
-    id: number,
-    state_number: string,
-    brand: string,
-    model: string
+    id: number;
+    state_number: string;
+    brand: string;
+    model: string;
+}
+
+export type OrganizationItemFindOrgType = {
+    id: number;
+    organization_name: string;
 }
 
 export type FormikAddPeopleType = {

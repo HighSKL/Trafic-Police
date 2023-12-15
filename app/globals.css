@@ -39,3 +39,20 @@ body{margin:0; padding: 0;}
       --tools-shadow:rgba(17, 17, 26, 0.1) 0px 0px 16px;
     }
 }
+
+.error_message_text{
+  color: #d52828;
+  max-width: 80%;
+}
+
+.field{
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-flow: column;
+}
+
+.input{
+  border: 1px solid rgba(0, 0, 0, 0.235);
+  border-radius: 10px;
+}

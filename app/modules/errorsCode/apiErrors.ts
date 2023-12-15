@@ -1,5 +1,3 @@
-import { ErrorResponesType } from "@/app/types"
-
 class ApiError {
     UserNotAuthorized(){
         return {status: 401, message: "User not authorized"}

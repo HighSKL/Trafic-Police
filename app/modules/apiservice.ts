@@ -20,6 +20,7 @@ export const RegCar = async (StateNumber:string, RegionNumber: number, CarModel:
 )
 export const GetCompanyModels = (brandName:string) => post('car/getcompanymodels', {brandName: brandName})
 export const GetCurrentCar = async (query:string) => post('car/getcars', {query: query})
+export const GetCurrentOrganization = async (query:string) => post('people/get/organization', {query: query})
 export const AddPeoplePhys = async (CarsOwn: Array<number>, Email: string, OwnerName: string, Ownerphonenumber: string, 
     PassportSeries: number, PassportNumber: number, WhoPassportGived: string,
     DatePassportGived: string,  DriverlicenseNumber: number, DriverlicenseGivedData: string, Categories: string) => post('people/add/physical',

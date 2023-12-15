@@ -1,7 +1,6 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { sql } from "@vercel/postgres"
 import apiErrors from "@/app/modules/errorsCode/apiErrors";
-import { cookies } from "next/headers";
 
 export async function GET(req: Request) {
     const cars = await sql `SELECT * FROM cars`
