@@ -56,3 +56,39 @@ body{margin:0; padding: 0;}
   border: 1px solid rgba(0, 0, 0, 0.235);
   border-radius: 10px;
 }
+
+.cars_container{
+  display: flex;
+  justify-content: center;
+}
+
+.btn_add{
+  cursor: pointer;
+  border: 3px solid  rgba(0, 0, 0, 0.472);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  padding: 5px 20px;
+  font-size: 13px;
+}
+
+.cat_block{
+  width: 100%;
+  height: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  gap: 10px;
+}
+.category, .active_category{
+  text-align: center;
+  width: 70%;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 5px auto;
+}
+
+.active_category{
+  background-color: black;
+  color: white;
+}

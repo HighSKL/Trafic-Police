@@ -53,42 +53,10 @@
     cursor: pointer;
 }
 
-.cars_container{
-    display: flex;
-    justify-content: center;
-}
-
-.btn_add{
-    cursor: pointer;
-    border: 3px solid  rgba(0, 0, 0, 0.472);
-    border-radius: 20px;
-    margin-bottom: 20px;
-    padding: 5px 20px;
-    font-size: 13px;
-}
-
 .addcarWindow_container{
     position: absolute;
     margin-top: -55px;
     margin-left: 6%;
-}
-.cat_block{
-    width: 100%;
-    height: auto;
-    // display: flex;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    // flex-flow: row;
-    justify-content: center;
-    gap: 10px;
-}
-.category, .active_category{
-    text-align: center;
-    width: 70%;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    cursor: pointer;
-    margin: 5px auto;
 }
 
 .active_category{

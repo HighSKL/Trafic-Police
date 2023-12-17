@@ -1,8 +1,9 @@
 import { useRouter } from "next/navigation"
 import { setBodyModels } from "../../(storage)/bodymodelsdata"
-import { GetBodyModels, GetBrands, GetCompanyModels } from "../apiservice"
+import { GetBodyModels, GetBrands, GetCompanyModels, GetStreets } from "../apiservice"
 import { setModels } from "../../(storage)/modelsdata"
 import { setBrands } from "../../(storage)/brandsdata"
+import { setStreets } from "@/app/(storage)/streetsdata"
 
 export class DataFetcher {
     private router = useRouter()
@@ -21,8 +22,13 @@ export class DataFetcher {
 
     public async getBrands(){
         const brands = await GetBrands().then(res=>res.data)
-        // console.log(brands)
         setBrands(brands)
         this.getModels(brands[0].name)
+    }
+
+    public async getStreets(){
+        const streets = await GetStreets().then(res=>res.data)
+        setStreets(streets)
+        this.router.refresh()
     }
 }

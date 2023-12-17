@@ -5,6 +5,7 @@ const post = async (path: string, data: Object) => (await fetch(`${process.env.N
 export const GetCars = () => get('car/getcars')
 export const GetBrands = () => get('car/getbrands')
 export const GetBodyModels = () => get('car/getbodymodels')
+export const GetStreets = () => get('streets')
 //POST
 export const RegCar = async (StateNumber:string, RegionNumber: number, CarModel: string, 
     BodyNumber: number, ChassisNumber: number,EngineNumber: number, BodyModel: string,Color: string,

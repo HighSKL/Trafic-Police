@@ -41,6 +41,7 @@ export type PersonFieldType = {
     categories?: Array<string>;
     validate?: RegExp;
     date?: boolean;
+    list?: string[]|null;
 }
 
 export type CarItemFindCarType = {
