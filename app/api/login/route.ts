@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from 'bcryptjs';
 import { sql } from "@vercel/postgres"
-import apiErrors from "../errorsCode/apiErrors";
 import { cookies } from "next/headers";
+import apiErrors from "@/app/modules/errorsCode/apiErrors";
 
 export async function POST(req: NextRequest) {
-    
+
     const {email, password} = await req.json()
 
     const candidateUser = await sql`select id, password, refresh_token from special_users_data where email = ${email}`
