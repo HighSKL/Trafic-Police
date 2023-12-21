@@ -8,8 +8,8 @@ export async function POST(req: Request){
     const street = (await sql`SELECT id FROM streets WHERE name = ${body.Place_street}`).rows[0].id
 
     // add people to db
-    await sql`INSERT INTO physical_person VALUES (
-        ${owner_id}, ${street}, ${body.Place_house}, ${body.Place_room}, ${body.PassportSeries}, 
+    await sql`INSERT INTO company_driver VALUES (
+        ${owner_id}, ${body.OrganizationId}, ${street}, ${body.Place_house}, ${body.Place_room}, ${body.PassportSeries},
         ${body.PassportNumber}, ${body.WhoPassportGived}, ${body.DatePassportGived}, ${body.DriverlicenseNumber}, 
         ${body.DriverlicenseGivedData}, ${body.OwnerName}, ${body.PhoneNumber})`
 
@@ -18,13 +18,6 @@ export async function POST(req: Request){
         const categoryId = (await sql`SELECT id FROM categories WHERE name = ${category}`).rows[0].id
         await sql`INSERT INTO assigned_categories VALUES (${owner_id}, ${categoryId})`
     })
-    
-    // set cars owner into db
-    if(body.CarsOwn.length > 0){
-        body.CarsOwn.map(async (elem: number)=>{
-            await sql`update cars set owner_id = ${owner_id} where id = ${elem}`
-        })
-    }
 
     return NextResponse.json({status: 200})
 }

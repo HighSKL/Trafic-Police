@@ -18,7 +18,7 @@ interface FieldObject<Object> {
     changeFieldFunc?: any;
     findCarNeed?: boolean;
     findOrganizationNeed?: boolean;
-    categories?: string[];
+    categories?: string[]|null;
 }
 
 interface AdditionalDataObject {

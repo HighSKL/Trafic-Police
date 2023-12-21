@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import style from './findorganization.module.scss'
 import { IoMdClose } from "react-icons/io";
 import { GetCurrentCar, GetCurrentOrganization } from '../apiservice';
-import { CarItemFindCarType } from '@/app/types/types';
+import { CarItemFindCarType, OrganizationItemFindOrgType } from '@/app/types/types';
 
 type PropsType = {
     closeWindow: any,
@@ -13,14 +13,14 @@ export default function FindOrganizationBlock(props:PropsType) {
 
     const inputRef = useRef(null);
 
-    const [items, setItems] = useState<Array<CarItemFindCarType>>([])
+    const [items, setItems] = useState<Array<OrganizationItemFindOrgType>>([])
 
     const findItems = async () => { 
         if(inputRef.current)
             setItems(await GetCurrentOrganization(inputRef.current['value']).then(res=>res.data))
     }
 
-    const chooseItem = (item: CarItemFindCarType) => {
+    const chooseItem = (item: OrganizationItemFindOrgType) => {
         props.setChoosenItem(item)
         props.closeWindow()
     }
@@ -33,8 +33,7 @@ export default function FindOrganizationBlock(props:PropsType) {
                 
                 {items.map((elem)=>(
                     <div className={style.item} onClick={()=>{chooseItem(elem)}}>
-                        <p>{elem.brand}</p>
-                        <p>{elem.model}</p>
+                        <p>{elem.organization_name}</p>
                     </div>
                 ))}
             </div>

@@ -1,14 +1,15 @@
 "use client"
 import { useState, useEffect } from 'react';
-import { Form, Formik, Field } from "formik";
+import { Form, Formik, Field, FormikValues } from "formik";
 import style from './addpeople.module.scss'
 import Link from 'next/link';
 import { CarItemFindCarType, OrganizationItemFindOrgType, PersonFieldType } from '@/app/types/types';
-import { AddPeoplePhys } from '@/app/modules/apiservice';
+import { AddCompanyDriver, AddPeopleJur, AddPeoplePhys } from '@/app/modules/apiservice';
 import { addPeopleErrorsArr, setAddPeopleErrorsArr } from '@/app/(storage)/errorsStorage/errorsAddPeople';
 import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
 import { Streets } from '@/app/(storage)/streetsdata';
 import { DataFetcher } from '@/app/modules/models/dataFetcher';
+import { Categories } from '@/app/(storage)/categoriesdata';
 
 export default function AddPeople() {
 
@@ -27,68 +28,104 @@ export default function AddPeople() {
             // initialize lists
             if (!Streets)
                 await DataFetcherObject.getStreets()
+            if (!Categories)
+                await DataFetcherObject.getCategories()
             //
         })()
     }, [])
 
     const fieldsPhysialPerson: PersonFieldType[] = [
         { title: "Автомобили во владении", errorMessage: "Укажите автомобили во владении", name: "OwnCar", findCarNeed: true },
-        { title: "Улица", errorMessage: "Укажите улицу проживания", name: "Organization_place_street", list: Streets, validate: /^(?!---|\s)(\S)/},
-        { title: "Дом", errorMessage: "Укажите дом", name: "Organization_place_house", validate: /\S/ },
-        { title: "Квартира", errorMessage: "Укажите квартиру", name: "Organization_place_room", validate: /\S/ },
+        { title: "Улица", errorMessage: "Укажите улицу проживания", name: "Place_street", list: Streets, validate: /^(?!---|\s)(\S)/ },
+        { title: "Дом", errorMessage: "Укажите дом", name: "Place_house", validate: /\S/ },
+        { title: "Квартира", errorMessage: "Укажите квартиру", name: "Place_room", validate: /\S/ },
         { title: "Имя владельца", errorMessage: "Укажите имя", name: "OwnerName", validate: /\S/ },
-        { title: "Номер телефона владельца", errorMessage: "Укажите номер телефона в формате +X XXX XXX XX XX", name: "Ownerphonenumber", validate: /^((\+7)|(8))\d{10}$/ },
+        { title: "Номер телефона владельца", errorMessage: "Укажите номер телефона в формате +X XXX XXX XX XX", name: "PhoneNumber", validate: /^((\+7)|(8))\d{10}$/ },
         { title: "Серия паспорта", errorMessage: "Укажите серию паспорта", name: "PassportSeries", validate: /^\d{4}$/ },
         { title: "Номер паспорта", errorMessage: "Укажите номер паспорта", name: "PassportNumber", validate: /^\d{6}$/ },
         { title: "Кем паспорт выдан", errorMessage: "Укажите кем выдан паспорт", name: "WhoPassportGived", validate: /\S/ },
         { title: "Дата выдачи паспорта", errorMessage: "Укажите дату выдачи паспорта", name: "DatePassportGived", date: true, validate: /\S/ },
         { title: "Номер водительского удостоверения", errorMessage: "Укажите номер ВУ", name: "DriverlicenseNumber", validate: /\S/ },
         { title: "Дата выдачи водительского удостоверения", errorMessage: "Укажите дату выдачи ВУ", name: "DriverlicenseGivedData", validate: /^\d{10}$/, date: true },
-        { title: "Категории", errorMessage: "Укажите категории", name: "Categories", categories: ["A", "B", "C", "D", "E", "М"] }
+        { title: "Категории", errorMessage: "Укажите категории", name: "Categories", categories: Categories }
     ]
 
     const fieldsJuridicalPerson: PersonFieldType[] = [
         { title: "Автомобили во владении организации", errorMessage: "Укажите автомобили во владении", name: "OwnCar", findCarNeed: true },
-        { title: "Улица", errorMessage: "Укажите улицу нахождения организации", name: "Organization_place_street", list: Streets, validate: /^(?!---|\s)(\S)/ },
-        { title: "Дом", errorMessage: "Укажите дом", name: "Organization_place_house" },
-        { title: "Квартира/Офис", errorMessage: "Укажите квартиру/номер офиса", name: "Organization_place_room" },
+        { title: "Улица", errorMessage: "Укажите улицу нахождения организации", name: "Place_street", list: Streets, validate: /^(?!---|\s)(\S)/ },
+        { title: "Дом", errorMessage: "Укажите дом", name: "Place_house" },
+        { title: "Квартира/Офис", errorMessage: "Укажите квартиру/номер офиса", name: "Place_room" },
         { title: "Название организации", errorMessage: "Укажите название организации", name: "Organization_name" },
         { title: "ФИО директора организации", errorMessage: "Укажите имя директора", name: "DirectorName" },
-        { title: "Номер телефона директора организации", errorMessage: "Укажите номер телефона директора в формате +X XXX XXX XX XX", name: "Directorphonenumber" },
+        { title: "Номер телефона директора организации", errorMessage: "Укажите номер телефона директора в формате +X XXX XXX XX XX", name: "PhoneNumber" },
     ]
 
     const fieldsCompanyDriver: PersonFieldType[] = [
         { title: "Водитель в организации", errorMessage: "Укажите орагинизацию", name: "WhereWork", findOrganizationNeed: true },
+        { title: "Улица", errorMessage: "Укажите улицу проживания", name: "Place_street", list: Streets, validate: /^(?!---|\s)(\S)/ },
         { title: "Имя владельца", errorMessage: "", name: "OwnerName" },
-        { title: "Улица", errorMessage: "Укажите улицу проживания", name: "Organization_place_street", list: Streets, validate: /^(?!---|\s)(\S)/ },
-        { title: "Дом", errorMessage: "Укажите дом", name: "Organization_place_house", validate: /\S/ },
-        { title: "Квартира", errorMessage: "Укажите квартиру", name: "Organization_place_room", validate: /\S/ },
-        { title: "Номер телефона", errorMessage: "Укажите номер телефона в формате +X XXX XXX XX XX", name: "Ownerphonenumber", validate: /^((\+7)|(8))\d{10}$/ },
+        { title: "Дом", errorMessage: "Укажите дом", name: "Place_house", validate: /\S/ },
+        { title: "Квартира", errorMessage: "Укажите квартиру", name: "Place_room", validate: /\S/ },
+        { title: "Номер телефона", errorMessage: "Укажите номер телефона в формате +X XXX XXX XX XX", name: "PhoneNumber", validate: /^((\+7)|(8))\d{10}$/ },
         { title: "Серия паспорта", errorMessage: "Укажите серию паспорта", name: "PassportSeries" },
         { title: "Номер паспорта", errorMessage: "Укажите номер паспорта", name: "PassportNumber" },
         { title: "Кем паспорт выдан", errorMessage: "Укажите кем выдан паспорт", name: "WhoPassportGived" },
         { title: "Дата выдачи паспорта", errorMessage: "Укажите дату выдачи паспорта", name: "DatePassportGived", date: true },
         { title: "Номер водительского удостоверения", errorMessage: "Укажите номер ВУ", name: "DriverlicenseNumber" },
         { title: "Дата выдачи водительского удостоверения", errorMessage: "Укажите дату выдачи ВУ", name: "DriverlicenseGivedData", date: true },
-        { title: "Категории", errorMessage: "Укажите категории", name: "Categories", categories: ["A", "B", "C", "D", "E", "М"] }
+        { title: "Категории", errorMessage: "Укажите категории", name: "Categories", categories: Categories }
     ]
 
     const [personChosenCars, setPersonChosenCars] = useState<CarItemFindCarType[]>([])
     const [personChoosenOrganization, setPersonChosenOrganization] = useState<OrganizationItemFindOrgType>()
 
-    const sendRequest = (values: any) => {
+    const PhysicalPersonSendRequest = (values: FormikValues) => {
+        const chosenCarsId = personChosenCars.map((item: CarItemFindCarType) => item.id)
+        const categories = activeCategory
+        AddPeoplePhys(chosenCarsId, values.Place_street, values.Place_house, values.Place_room, values.OwnerName, 
+            values.PhoneNumber,parseInt(values.PassportSeries), parseInt(values.PassportNumber), 
+            values.WhoPassportGived, values.DatePassportGived, parseInt(values.DriverlicenseNumber),
+            values.DriverlicenseGivedData, categories)
+    }
+
+    const JuridicalPersonSendRequest = (values: FormikValues) => {
+        const chosenCarsId = personChosenCars.map((item: CarItemFindCarType) => item.id)
+        AddPeopleJur(chosenCarsId, values.Place_street, values.Place_house, values.Place_room, values.Organization_name,
+            values.DirectorName, values.PhoneNumber)
+    }
+
+    const CompanyDriverPersonSendRequest = (values: FormikValues) => {
+        if(personChoosenOrganization){
+            const chosenOrganizationId = personChoosenOrganization.id
+            const categories = activeCategory
+
+            AddCompanyDriver(chosenOrganizationId, values.Place_street, values.Place_house, values.Place_room, values.OwnerName, 
+                values.PhoneNumber,parseInt(values.PassportSeries), parseInt(values.PassportNumber), 
+                values.WhoPassportGived, values.DatePassportGived, parseInt(values.DriverlicenseNumber),
+                values.DriverlicenseGivedData, categories)
+        }
+    }
+
+    const trySendRequest = (values: FormikValues) => {
+
         switch (person) {
             case personType.physical: {
-                const chosenCarsId = personChosenCars.map((item: CarItemFindCarType) => item.id)
-                const categories = activeCategory.join(' ')
-                AddPeoplePhys(chosenCarsId, values.Email, values.OwnerName, values.Ownerphonenumber, parseInt(values.PassportSeries),
-                    parseInt(values.PassportNumber), values.WhoPassportGived, values.DatePassportGived, parseInt(values.DriverlicenseNumber),
-                    values.DriverlicenseGivedData, categories)
+                FieldsWorkerObject.validate(fieldsPhysialPerson, values)
+                FieldsWorkerObject.sendRequest(()=>PhysicalPersonSendRequest(values))
+                break
             }
             case personType.juridical: {
-
+                FieldsWorkerObject.validate(fieldsJuridicalPerson, values)
+                FieldsWorkerObject.sendRequest(()=>JuridicalPersonSendRequest(values))
+                break
+            }
+            case personType.companyDriver: {
+                FieldsWorkerObject.validate(fieldsCompanyDriver, values)
+                FieldsWorkerObject.sendRequest(()=>CompanyDriverPersonSendRequest(values))
+                break
             }
         }
+        
     }
 
     const defaultVariables = (reset?: () => void) => {
@@ -117,29 +154,14 @@ export default function AddPeople() {
                     <h1 className={style.title}>Зарегистрировать человека</h1>
                     <Formik
                         initialValues={{
-                            WhereWork: '', OwnCar: '', Organization_place_street: '', Organization_place_house: '',
-                            Organization_place_room: '', OwnerName: '', Ownerphonenumber: '', PassportSeries: '',
+                            WhereWork: '', OwnCar: '', Place_street: '', Place_house: '',
+                            Place_room: '', OwnerName: '', PhoneNumber: '', PassportSeries: '',
                             PassportNumber: '', WhoPassportGived: '', DatePassportGived: '', DriverlicenseNumber: '',
-                            DriverlicenseGivedData: '', Categories: '', Organization_name: '', DirectorName: '',
-                            Directorphonenumber: ''
+                            DriverlicenseGivedData: '', Categories: '', Organization_name: '', DirectorName: ''
                         }}
                         onSubmit={(values) => {
-                            switch (person) {
-                                case personType.physical: {
-                                    FieldsWorkerObject.validate(fieldsPhysialPerson, values)
-                                    break
-                                }
-                                case personType.juridical: {
-                                    FieldsWorkerObject.validate(fieldsJuridicalPerson, values)
-                                    break
-                                }
-                                case personType.companyDriver: {
-                                    FieldsWorkerObject.validate(fieldsCompanyDriver, values)
-                                    break
-                                }
-                            }
-                        }
-                        }
+                            trySendRequest(values)
+                        }}
                     >
                         {({ resetForm }) => (
                             <Form className={style.from_container} id={style.form}>

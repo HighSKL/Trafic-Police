@@ -38,7 +38,7 @@ export type PersonFieldType = {
     errorMessage: string;
     findCarNeed?: boolean;
     findOrganizationNeed?: boolean;
-    categories?: Array<string>;
+    categories?: string[]|null;
     validate?: RegExp;
     date?: boolean;
     list?: string[]|null;
@@ -50,6 +50,7 @@ export type CarItemFindCarType = {
     brand: string;
     model: string;
 }
+
 
 export type OrganizationItemFindOrgType = {
     id: number;

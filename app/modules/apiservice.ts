@@ -6,6 +6,7 @@ export const GetCars = () => get('car/getcars')
 export const GetBrands = () => get('car/getbrands')
 export const GetBodyModels = () => get('car/getbodymodels')
 export const GetStreets = () => get('streets')
+export const GetCategories = () => get('categories')
 //POST
 export const RegCar = async (StateNumber:string, RegionNumber: number, CarModel: string, 
     BodyNumber: number, ChassisNumber: number,EngineNumber: number, BodyModel: string,Color: string,
@@ -22,23 +23,34 @@ export const RegCar = async (StateNumber:string, RegionNumber: number, CarModel:
 export const GetCompanyModels = (brandName:string) => post('car/getcompanymodels', {brandName: brandName})
 export const GetCurrentCar = async (query:string) => post('car/getcars', {query: query})
 export const GetCurrentOrganization = async (query:string) => post('people/get/organization', {query: query})
-export const AddPeoplePhys = async (CarsOwn: Array<number>, Email: string, OwnerName: string, Ownerphonenumber: string, 
-    PassportSeries: number, PassportNumber: number, WhoPassportGived: string,
-    DatePassportGived: string,  DriverlicenseNumber: number, DriverlicenseGivedData: string, Categories: string) => post('people/add/physical',
+export const AddPeoplePhys = async (CarsOwn: Array<number>, Place_street: string, Place_house: string, Place_room: string, 
+    OwnerName: string, PhoneNumber: string, PassportSeries: number, PassportNumber: number, WhoPassportGived: string,
+    DatePassportGived: string, DriverlicenseNumber: number, DriverlicenseGivedData: string, Categories: string[]
+    ) => post('people/add/physical',
     {
-        CarsOwn: CarsOwn, Email: Email, OwnerName: OwnerName, Ownerphonenumber: Ownerphonenumber, 
-        PassportSeries: PassportSeries, PassportNumber: PassportNumber, WhoPassportGived: WhoPassportGived,
-        DatePassportGived: DatePassportGived,  DriverlicenseNumber: DriverlicenseNumber, 
+        CarsOwn: CarsOwn, Place_street: Place_street, Place_house: Place_house, Place_room: Place_room, 
+        OwnerName: OwnerName, PhoneNumber: PhoneNumber, PassportSeries: PassportSeries, PassportNumber: PassportNumber,
+        WhoPassportGived: WhoPassportGived, DatePassportGived: DatePassportGived,  DriverlicenseNumber: DriverlicenseNumber, 
         DriverlicenseGivedData: DriverlicenseGivedData, Categories: Categories
     }
 )
-export const AddPeopleJur=async(CarsOwn: Array<number>, Organization_address: string, Organization_name: string,
-    DirectorName: string, Directorphonenumber: string) => post('people/add/juridical',
+export const AddPeopleJur=async(CarsOwn: Array<number>, Place_street: string, Place_house: string, Place_room: string,
+    Organization_name: string, DirectorName: string, Directorphonenumber: string) => post('people/add/juridical',
     {
-        CarsOwn: CarsOwn, Organization_address: Organization_address, Organization_name: Organization_name, 
-        DirectorName: DirectorName, Directorphonenumber: Directorphonenumber
+        CarsOwn: CarsOwn, Place_street: Place_street, Place_house: Place_house, Place_room:Place_room,
+        Organization_name: Organization_name, DirectorName: DirectorName, Directorphonenumber: Directorphonenumber
+    }
+)
+export const AddCompanyDriver = async (OrganizationId: number, Place_street: string, Place_house: string, Place_room: string, 
+    OwnerName: string, PhoneNumber: string, PassportSeries: number, PassportNumber: number, WhoPassportGived: string,
+    DatePassportGived: string, DriverlicenseNumber: number, DriverlicenseGivedData: string, Categories: string[]
+    ) => post('people/add/companydriver',
+    {
+        OrganizationId: OrganizationId, Place_street: Place_street, Place_house: Place_house, Place_room: Place_room, 
+        OwnerName: OwnerName, PhoneNumber: PhoneNumber, PassportSeries: PassportSeries, PassportNumber: PassportNumber,
+        WhoPassportGived: WhoPassportGived, DatePassportGived: DatePassportGived,  DriverlicenseNumber: DriverlicenseNumber, 
+        DriverlicenseGivedData: DriverlicenseGivedData, Categories: Categories
     }
 )
 //
-
 
