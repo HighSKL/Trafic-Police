@@ -9,9 +9,11 @@ import { Models, setModels } from '@/app/(storage)/modelsdata';
 import { BodyModels } from '@/app/(storage)/bodymodelsdata';
 import { DataFetcher } from '@/app/modules/models/dataFetcher';
 import { RegCar } from '@/app/modules/apiservice';
-import { addCarErrorsArr, setAddCarErrorsArr } from '@/app/(storage)/errorsStorage/errorsAddCar';
 import { FieldCar } from '@/app/types/types';
 import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/app/(storage)/store';
+import { setAddCarErrors } from '@/app/(storage)/reducers/errorsReducer';
 
 
 export default function AddCar() {
@@ -19,7 +21,8 @@ export default function AddCar() {
     const router = useRouter()
     const selectRef = useRef(null);
     const DataFetcherObject = new DataFetcher()
-    const FieldsWorkerObject = new FieldsWorker(addCarErrorsArr, setAddCarErrorsArr)
+    const errorArr = useSelector((state:RootState)=>state.errors.AddCarPage)
+    const FieldsWorkerObject = new FieldsWorker(errorArr, setAddCarErrors)
 
     const [isSendDataButtonDisabled, setIsSendDataButtonDisabled] = useState<boolean>(false)
 
@@ -66,9 +69,6 @@ export default function AddCar() {
         {title: "Дата постановки на учет", name: "DateRegistration", errorMessage: "Укажите дату постановки на учет", date: true, validate: /./},
         {title: "Годовой налог на авто", name: "CarTaxPerYear", errorMessage: "Укажите налог на авто", validate: /\d/}   
     ]
-
-    // {title: "Номер талона ТО", name: "InspectionTicketId"},
-    // {title: "Дата выдачи талона ТО", name: "DateTicketGived", date: true, validate: /./},
 
     const fieldsRender = FieldsWorkerObject.renderCarsFields(fields, { ref: selectRef})
 

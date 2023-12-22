@@ -5,11 +5,13 @@ import style from './addpeople.module.scss'
 import Link from 'next/link';
 import { CarItemFindCarType, OrganizationItemFindOrgType, PersonFieldType } from '@/app/types/types';
 import { AddCompanyDriver, AddPeopleJur, AddPeoplePhys } from '@/app/modules/apiservice';
-import { addPeopleErrorsArr, setAddPeopleErrorsArr } from '@/app/(storage)/errorsStorage/errorsAddPeople';
 import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
 import { Streets } from '@/app/(storage)/streetsdata';
 import { DataFetcher } from '@/app/modules/models/dataFetcher';
 import { Categories } from '@/app/(storage)/categoriesdata';
+import { setAddPeopleErrors } from '@/app/(storage)/reducers/errorsReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/app/(storage)/store';
 
 export default function AddPeople() {
 
@@ -20,8 +22,12 @@ export default function AddPeople() {
     const [activeCategory, setActiveCategory] = useState<string[]>([])
     const [person, setPerson] = useState<personType>(personType.physical)
     const DataFetcherObject = new DataFetcher()
+    const [isSendDataButtonDisabled, setIsSendDataButtonDisabled] = useState<boolean>(false)
 
-    const FieldsWorkerObject = new FieldsWorker(addPeopleErrorsArr, setAddPeopleErrorsArr)
+    const errorsArr = useSelector((state: RootState)=>state.errors.AddPeoplePage)
+    const dispatch = useDispatch()
+
+    const FieldsWorkerObject = new FieldsWorker(errorsArr, setAddPeopleErrors)
 
     useEffect(() => {
         (async () => {
@@ -63,7 +69,7 @@ export default function AddPeople() {
     const fieldsCompanyDriver: PersonFieldType[] = [
         { title: "Водитель в организации", errorMessage: "Укажите орагинизацию", name: "WhereWork", findOrganizationNeed: true },
         { title: "Улица", errorMessage: "Укажите улицу проживания", name: "Place_street", list: Streets, validate: /^(?!---|\s)(\S)/ },
-        { title: "Имя владельца", errorMessage: "", name: "OwnerName" },
+        { title: "Имя водителя", errorMessage: "", name: "OwnerName" },
         { title: "Дом", errorMessage: "Укажите дом", name: "Place_house", validate: /\S/ },
         { title: "Квартира", errorMessage: "Укажите квартиру", name: "Place_room", validate: /\S/ },
         { title: "Номер телефона", errorMessage: "Укажите номер телефона в формате +X XXX XXX XX XX", name: "PhoneNumber", validate: /^((\+7)|(8))\d{10}$/ },
@@ -79,49 +85,60 @@ export default function AddPeople() {
     const [personChosenCars, setPersonChosenCars] = useState<CarItemFindCarType[]>([])
     const [personChoosenOrganization, setPersonChosenOrganization] = useState<OrganizationItemFindOrgType>()
 
-    const PhysicalPersonSendRequest = (values: FormikValues) => {
+    const PhysicalPersonSendRequest = (values: FormikValues, resetForm: any) => {
         const chosenCarsId = personChosenCars.map((item: CarItemFindCarType) => item.id)
         const categories = activeCategory
+        setIsSendDataButtonDisabled(true)
         AddPeoplePhys(chosenCarsId, values.Place_street, values.Place_house, values.Place_room, values.OwnerName, 
             values.PhoneNumber,parseInt(values.PassportSeries), parseInt(values.PassportNumber), 
             values.WhoPassportGived, values.DatePassportGived, parseInt(values.DriverlicenseNumber),
-            values.DriverlicenseGivedData, categories)
+            values.DriverlicenseGivedData, categories).then(()=>{
+                setIsSendDataButtonDisabled(false)
+                resetForm()
+            })
     }
 
-    const JuridicalPersonSendRequest = (values: FormikValues) => {
+    const JuridicalPersonSendRequest = (values: FormikValues, resetForm: any) => {
         const chosenCarsId = personChosenCars.map((item: CarItemFindCarType) => item.id)
+        setIsSendDataButtonDisabled(true)
         AddPeopleJur(chosenCarsId, values.Place_street, values.Place_house, values.Place_room, values.Organization_name,
-            values.DirectorName, values.PhoneNumber)
+            values.DirectorName, values.PhoneNumber).then(()=>{
+                setIsSendDataButtonDisabled(false)
+                resetForm()
+            })
     }
 
-    const CompanyDriverPersonSendRequest = (values: FormikValues) => {
+    const CompanyDriverPersonSendRequest = (values: FormikValues, resetForm: any) => {
         if(personChoosenOrganization){
             const chosenOrganizationId = personChoosenOrganization.id
             const categories = activeCategory
-
+            setIsSendDataButtonDisabled(true)
             AddCompanyDriver(chosenOrganizationId, values.Place_street, values.Place_house, values.Place_room, values.OwnerName, 
                 values.PhoneNumber,parseInt(values.PassportSeries), parseInt(values.PassportNumber), 
                 values.WhoPassportGived, values.DatePassportGived, parseInt(values.DriverlicenseNumber),
-                values.DriverlicenseGivedData, categories)
+                values.DriverlicenseGivedData, categories).then(()=>{
+                    setIsSendDataButtonDisabled(false)
+                    resetForm()
+                })
         }
     }
 
-    const trySendRequest = (values: FormikValues) => {
+    const trySendRequest = (values: FormikValues, resetForm: any) => {
 
         switch (person) {
             case personType.physical: {
                 FieldsWorkerObject.validate(fieldsPhysialPerson, values)
-                FieldsWorkerObject.sendRequest(()=>PhysicalPersonSendRequest(values))
+                FieldsWorkerObject.sendRequest(()=>PhysicalPersonSendRequest(values, {resetForm}))
                 break
             }
             case personType.juridical: {
                 FieldsWorkerObject.validate(fieldsJuridicalPerson, values)
-                FieldsWorkerObject.sendRequest(()=>JuridicalPersonSendRequest(values))
+                FieldsWorkerObject.sendRequest(()=>JuridicalPersonSendRequest(values, {resetForm}))
                 break
             }
             case personType.companyDriver: {
                 FieldsWorkerObject.validate(fieldsCompanyDriver, values)
-                FieldsWorkerObject.sendRequest(()=>CompanyDriverPersonSendRequest(values))
+                FieldsWorkerObject.sendRequest(()=>CompanyDriverPersonSendRequest(values, {resetForm}))
                 break
             }
         }
@@ -132,7 +149,7 @@ export default function AddPeople() {
         setActiveCategory([])
         setPersonChosenCars([])
         reset ? reset() : null
-        setAddPeopleErrorsArr([])
+        dispatch(setAddPeopleErrors([]))
     }
 
     const changePeopleType = (personType: personType, reset: () => void) => {
@@ -159,8 +176,8 @@ export default function AddPeople() {
                             PassportNumber: '', WhoPassportGived: '', DatePassportGived: '', DriverlicenseNumber: '',
                             DriverlicenseGivedData: '', Categories: '', Organization_name: '', DirectorName: ''
                         }}
-                        onSubmit={(values) => {
-                            trySendRequest(values)
+                        onSubmit={(values, { resetForm }) => {
+                            trySendRequest(values, resetForm)
                         }}
                     >
                         {({ resetForm }) => (
@@ -184,7 +201,7 @@ export default function AddPeople() {
                                     {person == personType.juridical && fieldsJurRender}
                                     {person == personType.companyDriver && fieldsDriverRender}
                                 </div>
-                                <button className={style.button} type="submit" disabled={false}>Добавить</button>
+                                <button className={style.button} type="submit" disabled={isSendDataButtonDisabled}>Добавить</button>
                             </Form>
                         )}
                     </Formik>

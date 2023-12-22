@@ -1,4 +1,5 @@
 import { useRouter } from "next/navigation"
+import { useDispatch } from "react-redux";
 
 interface ElementType<GetElement> {
     name: string;
@@ -8,11 +9,11 @@ interface ElementType<GetElement> {
 export class ErrorComponentWorker {
 
     private errorArr: string[]
-    private setErrorArr: (newArr: string[])=>void
+    private setErrorArr: any
     private router = useRouter()
-    
+    private dispatch = useDispatch()
 
-    constructor(arr: string[], setErrorArr: (newArr:string[])=>void){
+    constructor(arr: string[], setErrorArr: any){
         this.errorArr = arr
         this.setErrorArr = setErrorArr
         this.changeError = this.changeError.bind(this)
@@ -33,7 +34,7 @@ export class ErrorComponentWorker {
             if(!newState.includes(errorName))
                 newState.push(errorName)
             this.setFieldsErrors(newState)
-            this.setErrorArr(newState)
+            this.dispatch(this.setErrorArr(newState))
             this.router.refresh()
         }
         else{

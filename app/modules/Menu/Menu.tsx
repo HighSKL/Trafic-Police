@@ -12,6 +12,8 @@ export default function Menu() {
                 <ul className={style.tools_container}>
                     <li onClick={() => router.push('/addcar')}>Добавить автомобиль +</li>
                     <li onClick={() => router.push('/addpeople')}>Добавить владельца +</li>
+                    <li onClick={() => router.push('/addinspect')}>Добавить технический осмотр +</li>
+                    <li onClick={() => router.push('/addinspect')}>Добавить ДТП +</li>
                 </ul>
             </div>
         </>

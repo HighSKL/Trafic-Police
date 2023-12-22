@@ -1,0 +1,83 @@
+.funс_block{
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.redirect_link{
+    cursor: pointer;
+    color: black;
+}
+
+.title{
+    text-align: center;
+    font-size: 25px;
+    margin-top: 50px;
+    font-weight: 500;
+}
+.fields_container{
+    max-width: 80%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+.submitButton{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.field{
+    text-align: center;
+}
+
+.input{
+    border: 1px solid rgba(0, 0, 0, 0.235);
+    border-radius: 10px;
+}
+
+
+.from_container{
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+}
+
+.button{
+    max-width: 400px;
+    margin: 0 auto;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    padding: 10px 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.21);
+    cursor: pointer;
+}
+
+.addcarWindow_container{
+    position: absolute;
+    margin-top: -55px;
+    margin-left: 6%;
+}
+
+.active_category{
+    background-color: black;
+    color: white;
+}
+
+.field_title{
+    max-width: 300px;
+}
+
+.people_type_container{
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.people_type_block{
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    gap: 5px;
+}

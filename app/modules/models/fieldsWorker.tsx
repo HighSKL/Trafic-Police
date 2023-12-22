@@ -21,9 +21,14 @@ interface FieldObject<Object> {
     categories?: string[]|null;
 }
 
+interface CarsExtend<CarType>{
+    brand: string;
+    model: string;
+}
+
 interface AdditionalDataObject {
     ref?: React.MutableRefObject<null | any>;
-    chosenCarsArr?: CarItemFindCarType[];
+    chosenCarsArr?: CarItemFindCarType[]|any;
     chosenOrganization?: OrganizationItemFindOrgType;
     activeCategory?: string[];
     setActiveCategory?: any;
@@ -35,11 +40,11 @@ export class FieldsWorker {
 
     private ErrorWorker: ErrorComponentWorker
 
-    constructor(addErrorsArr: string[], setAddErrorsArr: (newState: string[]) => void) {
+    constructor(addErrorsArr: string[], setAddErrorsArr: any) {
         this.ErrorWorker = new ErrorComponentWorker(addErrorsArr, setAddErrorsArr)
     }
 
-    private renderFindCarWindow(chosenCarsArr: any, setPersonChosenCars: any) {
+    private renderFindCarWindow<CarType>(chosenCars: CarType[]|CarsExtend<CarType>, setPersonChosenCars: any) {
         const [isWindowOpen, setIsWindowOpen] = useState(false);
 
         const div = (setIsFindCarOpen: (value: boolean) => void) => (
@@ -50,17 +55,22 @@ export class FieldsWorker {
 
         return (
             <div>
-                {chosenCarsArr.map((car: any) => (
+                {Array.isArray(chosenCars) ? chosenCars.map((car: any) => (
                     <div>
                         <p>{car.brand}</p>
                         <p>{car.model}</p>
                     </div>
-                ))}
-                {div(setIsWindowOpen)}
+                )):
+                    <div>
+                        <p>{chosenCars?.brand}</p>
+                        <p>{chosenCars?.model}</p>
+                    </div>
+                }
+                {Array.isArray(chosenCars)?div(setIsWindowOpen):!chosenCars&&div(setIsWindowOpen)}
                 {isWindowOpen &&
                     <FindCarBlock
                         closeWindow={() => setIsWindowOpen(false)}
-                        setChoosenItem={(item: CarItemFindCarType) => setPersonChosenCars((prevState: string[]) => [...prevState, item])} />
+                        setChoosenItem={(item: CarItemFindCarType) => Array.isArray(chosenCars)?setPersonChosenCars((prevState: string[]) => [...prevState, item]):setPersonChosenCars(item)} />
                 }
             </div>
         )
@@ -77,7 +87,7 @@ export class FieldsWorker {
 
         return (
             <div>
-                {div(setIsWindowOpen)}
+                {!chosenOrganization&&div(setIsWindowOpen)}
                 {isWindowOpen&&
                     <FindOrganizationBlock closeWindow={()=>setIsWindowOpen(false)} setChoosenItem={(item: OrganizationItemFindOrgType) => setPersonChosenOrganization(item)} />
                 }
@@ -87,9 +97,6 @@ export class FieldsWorker {
             </div>
         )
     }
-
-
-
 
     public renderCarsFields<Component>(fileds: FieldObject<Component>[], AdditionalDataObject?: AdditionalDataObject): ReactNode {
         return fileds.length == 0 ? <></> :
@@ -118,7 +125,6 @@ export class FieldsWorker {
                 </div>
             ))
     }
-
 
     public renderPeopleFields<Obj>(fileds: FieldObject<Obj>[], AdditionalDataObject?: AdditionalDataObject): ReactNode {
 
@@ -160,7 +166,11 @@ export class FieldsWorker {
                         ))}</Field>
                     }
                     {
-                        !elem.categories && !elem.findCarNeed && !elem.findOrganizationNeed && !elem.list&& <Field name={elem.name} className="input" />
+                        elem.date && <Field type="date" name={elem.name} className="input" />
+                    }
+                    {
+                        !elem.categories && !elem.findCarNeed && !elem.findOrganizationNeed && !elem.list&& !elem.date &&
+                        <Field name={elem.name} className="input" />
                     }
                 </div>
                 {
@@ -169,7 +179,6 @@ export class FieldsWorker {
             </div>
         ))
     }
-
 
     public validate<Component>(arrValidating: FieldObject<Component>[], formikValues: FormikValues, customValidate?:()=>boolean) {
         arrValidating.forEach((field) => {

@@ -30,7 +30,6 @@ export default function FindCarBlock(props:PropsType) {
             <div className={style.closeWindowBtn} onClick={props.closeWindow}><IoMdClose /></div>
             <input className={style.input} ref={inputRef} type="text" onChange={findItems} placeholder='Начните вводить гос. номер авто '/>
             <div className={style.blocks_container}>
-                
                 {items.map((elem)=>(
                     <div className={style.item} onClick={()=>{chooseItem(elem)}}>
                         <p>{elem.brand}</p>
