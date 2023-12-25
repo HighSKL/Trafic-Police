@@ -2,10 +2,11 @@ import { Field, FormikValues } from "formik";
 import { ReactNode } from "react";
 import { ErrorComponentWorker } from "./errorComponentWorker";
 import { validator } from "../validator";
-import { CarItemFindCarType, OrganizationItemFindOrgType } from "@/app/types/types";
+import { CarItemFindCarType, InspectorItemFindOrgType, OrganizationItemFindOrgType } from "@/app/types/types";
 import { useState } from "react";
 import FindCarBlock from "../FindCarBlock/FindCarBlock";
 import FindOrganizationBlock from "../FindOrganizationBlock/FindOrganizationBlock";
+import FindInspectorBlock from "../FindInspectorBlock/FindInspectorBlock";
 
 interface FieldObject<Object> {
     name: string;
@@ -17,6 +18,7 @@ interface FieldObject<Object> {
     date?: boolean;
     changeFieldFunc?: any;
     findCarNeed?: boolean;
+    findInspectorNeed?: boolean;
     findOrganizationNeed?: boolean;
     categories?: string[]|null;
 }
@@ -30,10 +32,12 @@ interface AdditionalDataObject {
     ref?: React.MutableRefObject<null | any>;
     chosenCarsArr?: CarItemFindCarType[]|any;
     chosenOrganization?: OrganizationItemFindOrgType;
+    chosenInspector?: InspectorItemFindOrgType|any;
     activeCategory?: string[];
     setActiveCategory?: any;
     setPersonChosenCars?: any;
     setPersonChosenOrganization?: any;
+    setChosenInspector?: any;
 }
 
 export class FieldsWorker {
@@ -98,6 +102,28 @@ export class FieldsWorker {
         )
     }
 
+    private renderFindInspectorWindow(chosenInspector: InspectorItemFindOrgType|undefined, setChosenInspector: any){
+        const [isWindowOpen, setIsWindowOpen] = useState(false);
+
+        const div = (setIsFindOrgOpen: (value: boolean) => void) => (
+            <div className="cars_container">
+                <div onClick={() => setIsFindOrgOpen(true)} className="btn_add">Добавить инспектора</div>
+            </div>
+        )
+
+        return (
+            <div>
+                {!chosenInspector&&div(setIsWindowOpen)}
+                {isWindowOpen&&
+                    <FindInspectorBlock closeWindow={()=>setIsWindowOpen(false)} setChoosenItem={(item: InspectorItemFindOrgType) => setChosenInspector(item)} />
+                }
+                <div>
+                    <p>{chosenInspector?.name}</p>
+                </div>
+            </div>
+        )
+    }
+
     public renderCarsFields<Component>(fileds: FieldObject<Component>[], AdditionalDataObject?: AdditionalDataObject): ReactNode {
         return fileds.length == 0 ? <></> :
             fileds.map((elem) => (
@@ -157,6 +183,10 @@ export class FieldsWorker {
                         this.renderFindOrganizationWindow(AdditionalDataObject?.chosenOrganization, AdditionalDataObject?.setPersonChosenOrganization)
                     }
                     {
+                        elem.findInspectorNeed &&
+                        this.renderFindInspectorWindow(AdditionalDataObject?.chosenInspector, AdditionalDataObject?.setChosenInspector)
+                    }
+                    {
                         elem.categories && CatigoriesBlock(elem.categories)
                     }
                     {
@@ -170,6 +200,31 @@ export class FieldsWorker {
                     }
                     {
                         !elem.categories && !elem.findCarNeed && !elem.findOrganizationNeed && !elem.list&& !elem.date &&
+                        !elem.findInspectorNeed && <Field name={elem.name} className="input" />
+                    }
+                </div>
+                {
+                    this.ErrorWorker?.renderErrors(elem)
+                }
+            </div>
+        ))
+    }
+
+    public renderPartAccidentFields<Obj>(fieldsPart: FieldObject<Obj>[], AdditionalDataObject?: AdditionalDataObject){
+        return fieldsPart.map((elem) => (
+            <div className="field" key={elem.name}>
+                <p className="field_title">{elem.title}</p>
+                <div className="addcarWindow_container">
+                    {
+                        elem.findCarNeed &&
+                        this.renderFindCarWindow(AdditionalDataObject?.chosenCarsArr, AdditionalDataObject?.setPersonChosenCars)
+                    }
+                    {
+                        elem.findInspectorNeed &&
+                        this.renderFindInspectorWindow(AdditionalDataObject?.chosenInspector, AdditionalDataObject?.setChosenInspector)
+                    }
+                    {
+                        !elem.findCarNeed && !elem.findInspectorNeed &&
                         <Field name={elem.name} className="input" />
                     }
                 </div>
@@ -178,6 +233,48 @@ export class FieldsWorker {
                 }
             </div>
         ))
+    }
+
+    public renderAccidentFields<Obj>(otherFileds: FieldObject<Obj>[], AdditionalDataObject?: AdditionalDataObject){
+
+
+        return otherFileds.map((elem) => (
+            <div className="field" key={elem.name}>
+                <p className="field_title">{elem.title}</p>
+                <div className="addcarWindow_container">
+                    {
+                        elem.findCarNeed &&
+                        this.renderFindCarWindow(AdditionalDataObject?.chosenCarsArr, AdditionalDataObject?.setPersonChosenCars)
+                    }
+                    {
+                        elem.findInspectorNeed &&
+                        this.renderFindInspectorWindow(AdditionalDataObject?.chosenInspector, AdditionalDataObject?.setChosenInspector)
+                    }
+                    {
+                        elem.list&&
+                        <Field as="select" name={elem.name}>{elem.list.map((element) => (
+                            <option value={element} key={element}>{element}</option>
+                        ))}</Field>
+                    }
+                    {
+                        !elem.findCarNeed && !elem.list && !elem.findInspectorNeed &&
+                        <Field name={elem.name} className="input" />
+                    }
+                </div>
+                {
+                    this.ErrorWorker?.renderErrors(elem)
+                }
+            </div>
+        ))
+        
+        // (
+        //     <>
+        //         <div className="part_container">
+        //             {partFieldsRender}
+        //         </div>
+        //         {otherFieldsRender}
+        //     </>
+        // )
     }
 
     public validate<Component>(arrValidating: FieldObject<Component>[], formikValues: FormikValues, customValidate?:()=>boolean) {

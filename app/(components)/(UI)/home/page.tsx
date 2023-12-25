@@ -1,11 +1,11 @@
 "use client"
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import style from './homePage.module.scss'
 import Header from '@/app/modules/Header/header';
 import Menu from '@/app/modules/Menu/Menu';
-import { GetCars } from '@/app/modules/apiservice';
-import { carsData, setCars } from '@/app/(storage)/carsdata';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/app/(storage)/store';
+import { DataFetcher } from '@/app/modules/models/dataFetcher';
 
 function HomePage() {
 
@@ -14,21 +14,19 @@ function HomePage() {
     }
 
     const [activeWindow, setActiveWindow]: any = useState(Windows.cars);
+    const { CarsData } = useSelector((state:RootState)=>({ CarsData: state.lists.CarsData}))
 
-    const router = useRouter();
+    const dataFetcher = new DataFetcher()
 
     useEffect(() => {
         (async () => {
-            if (!carsData) {
-                const carsfromDB = await GetCars().then(res => res)
-                setCars(carsfromDB.data)
-                router.refresh();
-            }
+            if (!CarsData)
+                await dataFetcher.getCarsData()
         }
         )()
     })
 
-    const renderCars = carsData?.map((elem: any) => (
+    const renderCars = CarsData?.map((elem: any) => (
         <div className={style.car_block} key={elem.id}>
             <div className={style.car_mark}>{elem.brand}</div>
             <div className={style.car_number}>{elem.state_number} {elem.region_number}</div>

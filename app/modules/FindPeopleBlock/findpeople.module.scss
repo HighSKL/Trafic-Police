@@ -1,0 +1,42 @@
+.wrapper{
+    width: 200px;
+    height: 250px;
+    border: 1px solid black;
+    border-radius: 20px;
+    position: absolute;
+    background: #fff;
+    overflow: hidden;
+    padding-top: 10px;
+}
+
+.closeWindowBtn{
+    float: right;
+    margin-right: 10px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.input{
+    outline: none;
+    width: calc(80% - 20px);
+    height: 20px;
+    margin: 0 auto;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.575);
+    padding-left: 4px;
+}
+
+.blocks_container{
+    margin-top: 20px;
+    overflow-y: scroll;
+    display: flex;
+    flex-flow: column;
+    gap: 5px;
+}
+.item{
+    width: calc(100% - 20px);
+    margin: 0 auto;
+    border: 1px solid rgba(0, 0, 0, 0.666);
+    border-radius: 10px;
+    cursor: pointer;
+}

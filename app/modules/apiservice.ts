@@ -8,6 +8,7 @@ export const GetBodyModels = () => get('car/getbodymodels')
 export const GetStreets = () => get('streets')
 export const GetCategories = () => get('categories')
 //POST
+export const authUser = (email: string, password: string) => post('login', { email, password })
 export const RegCar = async (StateNumber:string, RegionNumber: number, CarModel: string, 
     BodyNumber: number, ChassisNumber: number,EngineNumber: number, BodyModel: string,Color: string,
     EngineCapacity: number, EnginePower: number, WheelLocation: string, WheelDrive: string,YearManufactured: string,
@@ -23,6 +24,8 @@ export const RegCar = async (StateNumber:string, RegionNumber: number, CarModel:
 export const GetCompanyModels = (brandName:string) => post('car/getcompanymodels', {brandName: brandName})
 export const GetCurrentCar = async (query:string) => post('car/getcars', {query: query})
 export const GetCurrentOrganization = async (query:string) => post('people/get/organization', {query: query})
+export const GetCurrentInspector = async (query:string) => post('people/get/inspector', {query: query})
+export const GetCurrentPeople = async (query:string) => post('people/get/inspector', {query: query})
 export const AddPeoplePhys = async (CarsOwn: Array<number>, Place_street: string, Place_house: string, Place_room: string, 
     OwnerName: string, PhoneNumber: string, PassportSeries: number, PassportNumber: number, WhoPassportGived: string,
     DatePassportGived: string, DriverlicenseNumber: number, DriverlicenseGivedData: string, Categories: string[]
@@ -50,6 +53,14 @@ export const AddCompanyDriver = async (OrganizationId: number, Place_street: str
         OwnerName: OwnerName, PhoneNumber: PhoneNumber, PassportSeries: PassportSeries, PassportNumber: PassportNumber,
         WhoPassportGived: WhoPassportGived, DatePassportGived: DatePassportGived,  DriverlicenseNumber: DriverlicenseNumber, 
         DriverlicenseGivedData: DriverlicenseGivedData, Categories: Categories
+    }
+)
+export const AddTechnicalInspection = async (InspectedCarId: number, Date_inssue: string, InspectorId:string,
+    Mileage: number, Payment_amount: number, Payment_technical_inspection_ticket_gived: number
+    ) => post('cars/add/technical_inspection', 
+    {
+        InspectedCarId: InspectedCarId, Date_inssue: Date_inssue, InspectorId: InspectorId, Mileage:Mileage,
+        Payment_amount:Payment_amount, Payment_technical_inspection_ticket_gived: Payment_technical_inspection_ticket_gived
     }
 )
 //

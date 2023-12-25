@@ -13,7 +13,7 @@ export default function Menu() {
                     <li onClick={() => router.push('/addcar')}>Добавить автомобиль +</li>
                     <li onClick={() => router.push('/addpeople')}>Добавить владельца +</li>
                     <li onClick={() => router.push('/addinspect')}>Добавить технический осмотр +</li>
-                    <li onClick={() => router.push('/addinspect')}>Добавить ДТП +</li>
+                    <li onClick={() => router.push('/addaccident')}>Добавить ДТП +</li>
                 </ul>
             </div>
         </>

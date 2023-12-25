@@ -1,10 +1,13 @@
 'use client'
 import React from 'react';
 import style from './authpage.module.scss';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, FormikValues } from 'formik';
 import { validator } from '@/app/modules/validator';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { authUser } from '@/app/modules/apiservice';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/app/(storage)/store';
 
 export default function AuthPage() {
 
@@ -17,7 +20,36 @@ export default function AuthPage() {
 
     const [fieldError, setFieldError] = React.useState<FieldErrors | null>(null)
     const [isSignInDisabled, setIsSignInDisabled] = React.useState(false)
+    const errors = useSelector((state:RootState)=>state.errors.Login)
     const router = useRouter()
+
+    const trySendRequest = async (values: FormikValues) => {
+        if (
+            validator(/^\S+@\S+\.\S+$/, FieldErrors.emailError, values.email, setFieldError) &&
+            validator(/\w/, FieldErrors.passwordError, values.password, setFieldError)
+        ) {
+            setFieldError(null);
+            setIsSignInDisabled(true)
+            await authUser(values.email, values.password).then((res)=>{
+                switch(res.status){
+                    case 200:{
+                        router.push('/home')
+                        break
+                    }
+                    case 401:{
+                        setFieldError(FieldErrors.userNotFoundError)
+                        break
+                    }
+                    case 403:{
+                        setFieldError(FieldErrors.invalidPasswordError)
+                        break
+                    }
+                }
+                setIsSignInDisabled(false)
+            })
+
+        }
+    }
 
     return (
         <div className={style.wrapper}>
@@ -26,33 +58,7 @@ export default function AuthPage() {
                     <h1 className={style.title}>Авторизация</h1>
                     <Formik
                         initialValues={{ email: '', password: '' }}
-                        onSubmit={async (values) => {
-                            if (
-                                validator(/^\S+@\S+\.\S+$/, FieldErrors.emailError, values.email, setFieldError) &&
-                                validator(/\w/, FieldErrors.passwordError, values.password, setFieldError)
-                            ) {
-                                setFieldError(null);
-                                setIsSignInDisabled(true)
-                                // await authUser(values.email, values.password).then((res)=>{
-                                //     switch(res.status){
-                                //         case 200:{
-                                //             router.push('/home')
-                                //             break
-                                //         }
-                                //         case 401:{
-                                //             setFieldError(FieldErrors.userNotFoundError)
-                                //             break
-                                //         }
-                                //         case 403:{
-                                //             setFieldError(FieldErrors.invalidPasswordError)
-                                //             break
-                                //         }
-                                //     }
-                                //     setIsSignInDisabled(false)
-                                // })
-
-                            }
-                        }}
+                        onSubmit={async (values) => await trySendRequest(values)}
                     >
                         {() => (
                             <Form className={style.from_container} id={style.form}>
@@ -72,10 +78,6 @@ export default function AuthPage() {
                             </Form>
                         )}
                     </Formik>
-                    <div className={style.funс_block}>
-                        <Link href={"/registration"} className={style.redirect_link}>Регистрация</Link>
-                        <Link href={"#"} className={style.redirect_link}>Забыли пароль?</Link>
-                    </div>
                 </div>
             </div>
         </div>

@@ -1,14 +1,12 @@
 'use client'
 import { configureStore } from "@reduxjs/toolkit";
+import { listsReducer } from "./reducers/listsReducer";
 import { errorsReducer } from "./reducers/errorsReducer";
-
-// const reducers = combineReducers({
-//     errors: errorsReducer
-// })
 
 export const store = configureStore({
     reducer: {
-        errors: errorsReducer
+        errors: errorsReducer,
+        lists: listsReducer
     }
 })
 

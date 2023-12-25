@@ -1,17 +1,16 @@
 "use client"
-import { useState, useEffect } from 'react';
-import { Form, Formik, Field, FormikValues } from "formik";
-import style from './addpeople.module.scss'
 import Link from 'next/link';
-import { CarItemFindCarType, OrganizationItemFindOrgType, PersonFieldType } from '@/app/types/types';
-import { AddCompanyDriver, AddPeopleJur, AddPeoplePhys } from '@/app/modules/apiservice';
-import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
-import { Streets } from '@/app/(storage)/streetsdata';
-import { DataFetcher } from '@/app/modules/models/dataFetcher';
-import { Categories } from '@/app/(storage)/categoriesdata';
-import { setAddPeopleErrors } from '@/app/(storage)/reducers/errorsReducer';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+import style from './addpeople.module.scss';
 import { RootState } from '@/app/(storage)/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { Form, Formik, Field, FormikValues } from "formik";
+import { DataFetcher } from '@/app/modules/models/dataFetcher';
+import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
+import { setAddPeopleErrors } from '@/app/(storage)/reducers/errorsReducer';
+import { AddCompanyDriver, AddPeopleJur, AddPeoplePhys } from '@/app/modules/apiservice';
+import { CarItemFindCarType, OrganizationItemFindOrgType, PersonFieldType } from '@/app/types/types';
+
 
 export default function AddPeople() {
 
@@ -24,7 +23,12 @@ export default function AddPeople() {
     const DataFetcherObject = new DataFetcher()
     const [isSendDataButtonDisabled, setIsSendDataButtonDisabled] = useState<boolean>(false)
 
-    const errorsArr = useSelector((state: RootState)=>state.errors.AddPeoplePage)
+    const { errorsArr, Streets, Categories } = useSelector((state:RootState)=>({ 
+        errorsArr: state.errors.AddCarPage, 
+        Streets: state.lists.Streets,
+        Categories: state.lists.Categories
+    }))
+
     const dispatch = useDispatch()
 
     const FieldsWorkerObject = new FieldsWorker(errorsArr, setAddPeopleErrors)

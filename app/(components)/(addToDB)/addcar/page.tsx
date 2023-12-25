@@ -1,27 +1,33 @@
 'use client'
-import style from './addcar.module.scss';
-import { Formik, Form, FormikValues } from 'formik';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import { Brands } from '@/app/(storage)/brandsdata';
+import style from './addcar.module.scss';
 import { useRouter } from 'next/navigation';
-import { Models, setModels } from '@/app/(storage)/modelsdata';
-import { BodyModels } from '@/app/(storage)/bodymodelsdata';
-import { DataFetcher } from '@/app/modules/models/dataFetcher';
-import { RegCar } from '@/app/modules/apiservice';
 import { FieldCar } from '@/app/types/types';
-import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
-import { useSelector } from 'react-redux';
+import { RegCar } from '@/app/modules/apiservice';
 import { RootState } from '@/app/(storage)/store';
+import { Formik, Form, FormikValues } from 'formik';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { DataFetcher } from '@/app/modules/models/dataFetcher';
+import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
+import { setModels } from '@/app/(storage)/reducers/listsReducer';
 import { setAddCarErrors } from '@/app/(storage)/reducers/errorsReducer';
-
 
 export default function AddCar() {
 
     const router = useRouter()
     const selectRef = useRef(null);
     const DataFetcherObject = new DataFetcher()
-    const errorArr = useSelector((state:RootState)=>state.errors.AddCarPage)
+
+    const { errorArr, BodyModels, Brands, Models } = useSelector((state:RootState)=>({ 
+        errorArr: state.errors.AddCarPage, 
+        BodyModels: state.lists.BodyModels,
+        Brands: state.lists.Brands,
+        Models: state.lists.Models
+    }))
+
+    const dispatch = useDispatch();
+
     const FieldsWorkerObject = new FieldsWorker(errorArr, setAddCarErrors)
 
     const [isSendDataButtonDisabled, setIsSendDataButtonDisabled] = useState<boolean>(false)
@@ -30,15 +36,13 @@ export default function AddCar() {
         (async()=>{
             // initialize lists
             if(!Brands) await DataFetcherObject.getBrands()
-
             else{
                 if(Brands[0]!=='---')
                     await DataFetcherObject.getModels(Brands[0])
             }
-
+            
             if(!BodyModels) await DataFetcherObject.getBodyModels()
             //
-
         })()
     },[])
 
@@ -46,7 +50,7 @@ export default function AddCar() {
         if(selectRef.current&&selectRef.current['value'] !== '---')
             await DataFetcherObject.getModels(selectRef.current['value'])
         else if(selectRef.current&&selectRef.current['value'] === '---'){
-            setModels([])
+            dispatch(setModels([]))
             router.refresh()
         }
     }

@@ -57,6 +57,11 @@ export type OrganizationItemFindOrgType = {
     organization_name: string;
 }
 
+export type InspectorItemFindOrgType = {
+    id: number;
+    name: string;
+}
+
 export type FormikAddPeopleType = {
     OwnCar?: string;
     Email?: boolean;
