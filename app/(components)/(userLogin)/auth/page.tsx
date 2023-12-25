@@ -2,9 +2,8 @@
 import React from 'react';
 import style from './authpage.module.scss';
 import { Formik, Form, Field, FormikValues } from 'formik';
-import { validator } from '@/app/modules/validator';
+import { validatorAuth } from '@/app/modules/validator';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { authUser } from '@/app/modules/apiservice';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/app/(storage)/store';
@@ -25,8 +24,8 @@ export default function AuthPage() {
 
     const trySendRequest = async (values: FormikValues) => {
         if (
-            validator(/^\S+@\S+\.\S+$/, FieldErrors.emailError, values.email, setFieldError) &&
-            validator(/\w/, FieldErrors.passwordError, values.password, setFieldError)
+            validatorAuth(/^\S+@\S+\.\S+$/, FieldErrors.emailError, values.email, setFieldError) &&
+            validatorAuth(/\w/, FieldErrors.passwordError, values.password, setFieldError)
         ) {
             setFieldError(null);
             setIsSignInDisabled(true)
