@@ -7,6 +7,7 @@ export const GetBrands = () => get('car/getbrands')
 export const GetBodyModels = () => get('car/getbodymodels')
 export const GetStreets = () => get('streets')
 export const GetCategories = () => get('categories')
+export const GetUser = () => get('login/getuser')
 //POST
 export const authUser = (email: string, password: string) => post('login', { email, password })
 export const RegCar = async (StateNumber:string, RegionNumber: number, CarModel: string, 

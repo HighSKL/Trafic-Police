@@ -9,9 +9,10 @@ import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
 import { setAddAccidentErrors } from '@/app/(storage)/reducers/errorsReducer';
 import { CarItemFindCarType, InspectorItemFindOrgType } from '@/app/types/types';
 import { DataFetcher } from '@/app/modules/models/dataFetcher';
+import withAuth from '@/app/modules/Auth/withAuth';
 
 
-export default function AddAccidentPage() {
+function AddAccidentPage() {
 
     const errors = useSelector((state: RootState) => state.errors.AddAccident)
     const FieldWorkerObject = new FieldsWorker(errors, setAddAccidentErrors);
@@ -94,3 +95,6 @@ export default function AddAccidentPage() {
         </div>
     );
 }
+
+// export default withAuth(AddAccidentPage)
+export default AddAccidentPage

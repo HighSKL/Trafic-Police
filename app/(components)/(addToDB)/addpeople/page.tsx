@@ -10,9 +10,10 @@ import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
 import { setAddPeopleErrors } from '@/app/(storage)/reducers/errorsReducer';
 import { AddCompanyDriver, AddPeopleJur, AddPeoplePhys } from '@/app/modules/apiservice';
 import { CarItemFindCarType, OrganizationItemFindOrgType, PersonFieldType } from '@/app/types/types';
+import withAuth from '@/app/modules/Auth/withAuth';
 
 
-export default function AddPeople() {
+function AddPeople() {
 
     enum personType {
         physical, juridical, companyDriver
@@ -214,3 +215,6 @@ export default function AddPeople() {
         </div>
     );
 }
+
+// export default withAuth(AddPeople)
+export default AddPeople

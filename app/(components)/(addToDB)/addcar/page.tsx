@@ -12,8 +12,9 @@ import { DataFetcher } from '@/app/modules/models/dataFetcher';
 import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
 import { setModels } from '@/app/(storage)/reducers/listsReducer';
 import { setAddCarErrors } from '@/app/(storage)/reducers/errorsReducer';
+import withAuth from '@/app/modules/Auth/withAuth';
 
-export default function AddCar() {
+function AddCar() {
 
     const router = useRouter()
     const selectRef = useRef(null);
@@ -118,3 +119,6 @@ export default function AddCar() {
         </div>
     );
 }
+
+// export default withAuth(AddCar)
+export default AddCar

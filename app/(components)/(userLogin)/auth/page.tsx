@@ -5,10 +5,9 @@ import { Formik, Form, Field, FormikValues } from 'formik';
 import { validatorAuth } from '@/app/modules/validator';
 import { useRouter } from 'next/navigation';
 import { authUser } from '@/app/modules/apiservice';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/app/(storage)/store';
+import withOutOfAuth from '@/app/modules/Auth/withOutOfAuth';
 
-export default function AuthPage() {
+function AuthPage() {
 
     enum FieldErrors {
         emailError,
@@ -17,9 +16,12 @@ export default function AuthPage() {
         userNotFoundError
     }
 
+    enum StatusCodes {
+        UserAuthorized = 200, UserNotFound = 401, InvalidPassword = 403
+    }
+
     const [fieldError, setFieldError] = React.useState<FieldErrors | null>(null)
     const [isSignInDisabled, setIsSignInDisabled] = React.useState(false)
-    const errors = useSelector((state:RootState)=>state.errors.Login)
     const router = useRouter()
 
     const trySendRequest = async (values: FormikValues) => {
@@ -31,15 +33,15 @@ export default function AuthPage() {
             setIsSignInDisabled(true)
             await authUser(values.email, values.password).then((res)=>{
                 switch(res.status){
-                    case 200:{
+                    case StatusCodes.UserAuthorized:{
                         router.push('/home')
                         break
                     }
-                    case 401:{
+                    case StatusCodes.UserNotFound:{
                         setFieldError(FieldErrors.userNotFoundError)
                         break
                     }
-                    case 403:{
+                    case StatusCodes.InvalidPassword:{
                         setFieldError(FieldErrors.invalidPasswordError)
                         break
                     }
@@ -82,3 +84,6 @@ export default function AuthPage() {
         </div>
     );
 }
+
+// export default withOutOfAuth(AuthPage)
+export default AuthPage

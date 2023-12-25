@@ -6,6 +6,7 @@ import Menu from '@/app/modules/Menu/Menu';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/app/(storage)/store';
 import { DataFetcher } from '@/app/modules/models/dataFetcher';
+import withAuth from '@/app/modules/Auth/withAuth';
 
 function HomePage() {
 
@@ -63,4 +64,5 @@ function HomePage() {
     );
 }
 
-export default HomePage;
+// export default withAuth(HomePage);
+export default HomePage

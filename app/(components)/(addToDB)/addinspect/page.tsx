@@ -9,8 +9,9 @@ import { RootState } from '@/app/(storage)/store';
 import { setAddTechInspectionErrors } from '@/app/(storage)/reducers/errorsReducer';
 import { CarItemFindCarType, InspectorItemFindOrgType } from '@/app/types/types';
 import { AddTechnicalInspection } from '@/app/modules/apiservice';
+import withAuth from '@/app/modules/Auth/withAuth';
 
-export default function AddTechnicalInspectionPage() {
+function AddTechnicalInspectionPage() {
 
     const errors = useSelector((state: RootState)=> state.errors.AddTechInspectionPage)
 
@@ -72,3 +73,5 @@ export default function AddTechnicalInspectionPage() {
     );
 }
 
+// export default withAuth(AddTechnicalInspectionPage)
+export default AddTechnicalInspectionPage

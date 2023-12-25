@@ -1,45 +1,47 @@
-// "use client"
-// import { data, setUserData } from '@/app/Storage/store';
-// import { useRouter } from 'next/navigation';
-// import React, { useEffect, useState } from 'react';
-// import Preloader from '../Preloader/Preloader';
-// import { getProfile } from '../api_service';
-// import { ErrorResponesType, UserDataType } from '@/app/types';
+"use client"
 
-// type injectedProps = {}
+import { ErrorResponesType, UserDataType } from '@/app/types/types';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { GetUser } from '../apiservice';
+import { setUserData } from '@/app/(storage)/reducers/loginReducer';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/app/(storage)/store';
 
-// export default function withOutOfAuth<T extends injectedProps>(WrappedComponent: React.ComponentType<T>) {
-//     return (props: T) => {
+type injectedProps = {}
 
-//         const user = data.userData
-//         const router = useRouter()
+export default function withOutOfAuth<T extends injectedProps>(WrappedComponent: React.ComponentType<T>) {
+    return (props: T) => {
 
-//         const [isUser, setUser] = useState(true)
+        const userData = useSelector((state:RootState)=>state.login.user)
+        const router = useRouter()
 
-//         useEffect(() => {
-//             console.log(user)
-//             if (!user) {
-//                 (async () => {
-//                     const data: UserDataType|ErrorResponesType  = await getProfile().then(res => res)
-//                     console.log(data)
-//                     if (data?.status === 401) {
-//                         setUser(false)
-//                     }
-//                     else {
-//                         setUserData(data as UserDataType)
-//                         setUser(true)
-//                         router.push('/home')
-//                     }
-//                 })()
-//             }
-//             else{
-//                 setUser(true)
-//                 router.push('/home')
-//             }
-//         }, [])
+        const [isUser, setUser] = useState(true)
 
-//         return (<>
-//             {isUser ? <Preloader /> : <WrappedComponent {...props} />}
-//         </>)
-//     }
-// }
+        useEffect(() => {
+            if (!userData) {
+                (async () => {
+                    const data: UserDataType|ErrorResponesType  = await GetUser().then(res => res)
+                    console.log(data)
+                    if (data?.status === 401) {
+                        setUser(false)
+                    }
+                    else {
+                        setUserData(data as UserDataType)
+                        setUser(true)
+                        router.push('/home')
+                    }
+                })()
+            }
+            else{
+                setUser(true)
+                router.push('/home')
+            }
+        }, [])
+
+        return (<>
+            {/* {isUser ? <Preloader /> : <WrappedComponent {...props} />} */}
+            {!isUser && <WrappedComponent {...props} />}
+        </>)
+    }
+}

@@ -1,0 +1,1 @@
+export const secretToken = "trafic-police-app-token"

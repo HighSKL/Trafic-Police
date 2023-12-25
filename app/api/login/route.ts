@@ -15,6 +15,8 @@ export async function POST(req: NextRequest) {
     
     const hashPassword = await bcrypt.compare(password, candidateUser.rows[0].password)
 
+    console.log(hashPassword)
+
     if(!hashPassword)
         return NextResponse.json(apiErrors.InvalidPassword())
 

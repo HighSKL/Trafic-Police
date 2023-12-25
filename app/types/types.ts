@@ -83,3 +83,19 @@ export type KeyValue = {
     id: number;
     name: string;
 }
+
+export type DecodedUserType = {
+    userID: number,
+    email: string
+}
+
+export type ErrorResponesType = {
+    status: number,
+    message: string
+}
+
+export type UserDataType = {
+    email: string,
+    id: number,
+    status?: number
+}
