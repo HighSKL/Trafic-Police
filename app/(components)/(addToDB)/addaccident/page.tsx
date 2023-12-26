@@ -7,7 +7,7 @@ import { RootState } from '@/app/(storage)/store';
 import { Formik, Form, FormikValues } from 'formik';
 import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
 import { setAddAccidentErrors } from '@/app/(storage)/reducers/errorsReducer';
-import { CarItemFindCarType, InspectorItemFindOrgType } from '@/app/types/types';
+import { CarItemFindCarType, FindPeopleObjType, InspectorItemFindOrgType } from '@/app/types/types';
 import { DataFetcher } from '@/app/modules/models/dataFetcher';
 import withAuth from '@/app/modules/Auth/withAuth';
 
@@ -18,6 +18,7 @@ function AddAccidentPage() {
     const FieldWorkerObject = new FieldsWorker(errors, setAddAccidentErrors);
     const [isSendDataButtonDisabled, setIsSendDataButtonDisabled] = useState<boolean>(false)
 
+    const [activeChosenPeople, setActiveChosenPeople] = useState<FindPeopleObjType|null>(null)
     const [participants, setParticipants] = useState<any>([])
 
     const DataFetcherObject = new DataFetcher()
@@ -29,7 +30,7 @@ function AddAccidentPage() {
 
     const fields = {
         Participant: [
-            { title: "Участник ДТП", name: "DateInspectionTicketGived", errorMessage: "Укажите дату прохождения ТО" },
+            { title: "Участник ДТП", name: "DateInspectionTicketGived", errorMessage: "Укажите дату прохождения ТО", findPeopleNeed: true },
             { title: "Автомобиль участника ДТП", errorMessage: "Автомобиль прошедший ТО", name: "ChosenCars", list: [] }
         ],
         OtherFields: [
@@ -49,7 +50,7 @@ function AddAccidentPage() {
     }, [])
 
     const renderPartFields = FieldWorkerObject.renderPartAccidentFields(fields.Participant, {
-        chosenInspector: chosenInspector, setChosenInspector: setChosenInspector
+        people: {chosenPeople: activeChosenPeople, setChosenPeople: setActiveChosenPeople}
     })
 
     const renderOtherFields = FieldWorkerObject.renderAccidentFields(fields.OtherFields, {
@@ -60,12 +61,24 @@ function AddAccidentPage() {
 
     }
 
-    const a = participants.map((elem:any) => (
+    const renderParticipantsFields = ()=>(
         <div className={style.part_container}>
             {renderPartFields}
         </div>
     )
-    )
+
+    const renderChosenPart = participants.map((elem:any)=>(
+        <div className={style.part_item}>
+
+        </div>
+    ))
+
+    const addParticipants = () => {
+        if(activeChosenPeople){
+            setParticipants((prev: any) => [...prev, activeChosenPeople])
+            setActiveChosenPeople(null)
+        }
+    }
 
     return (
         <div>
@@ -81,9 +94,12 @@ function AddAccidentPage() {
             >
                 {() => (
                     <Form className={style.from_container} id={style.form}>
+                        <div className={style.chosen_part_container}>
+                            {renderChosenPart}
+                        </div>
                         <div className={style.part_block}>
-                            {a}
-                            <button onClick={() => setParticipants((prev: any) => [...prev, {}])}>Добавить участника</button>
+                            {renderParticipantsFields()}
+                            <button onClick={() => addParticipants()}>Добавить участника</button>
                         </div>
                         <div className={style.fields_container}>
                             {renderOtherFields}

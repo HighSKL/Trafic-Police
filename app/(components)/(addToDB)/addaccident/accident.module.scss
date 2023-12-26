@@ -85,7 +85,6 @@
 .part_block{
     max-width: 100%;
     display: grid;
-    // grid-template-columns: 1fr;
     margin: 0 auto;
     justify-content: center;
     align-items: center;
@@ -96,3 +95,17 @@
     display: flex;
     justify-content: space-between;
 }
+
+.chosen_part_container{
+    width: 60%;
+    margin: 0 auto;
+}
+
+.part_item{
+    width: 100%;
+    height: 15vh;
+    border: 1px solid black;
+    border-radius: 20px;
+    margin: 20px 0;
+}
+

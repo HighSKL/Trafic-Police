@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
-import style from './findinspector.module.scss'
+import style from './findpeople.module.scss'
 import { IoMdClose } from "react-icons/io";
-import { GetCurrentInspector } from '../apiservice';
-import { InspectorItemFindOrgType } from '@/app/types/types';
+import { GetCurrentInspector, GetCurrentPeople } from '../apiservice';
+import { FindPeopleObjType, InspectorItemFindOrgType } from '@/app/types/types';
 
 type PropsType = {
     closeWindow: any,
@@ -13,14 +13,18 @@ export default function FindPeopleBlock(props:PropsType) {
 
     const inputRef = useRef(null);
 
-    const [items, setItems] = useState<Array<InspectorItemFindOrgType>>([])
+    const [items, setItems] = useState<Array<FindPeopleObjType>>([])
 
     const findItems = async () => { 
-        if(inputRef.current)
-            setItems(await GetCurrentInspector(inputRef.current['value']).then(res=>res.data))
+        if(inputRef.current){
+            const itemss = await GetCurrentPeople(inputRef.current['value']).then(res=>res.data)
+            setItems(itemss)
+            console.log(itemss)
+        }
+            
     }
 
-    const chooseItem = (item: InspectorItemFindOrgType) => {
+    const chooseItem = (item: FindPeopleObjType) => {
         props.setChoosenItem(item)
         props.closeWindow()
     }
@@ -32,7 +36,7 @@ export default function FindPeopleBlock(props:PropsType) {
             <div className={style.blocks_container}>
                 {items.map((elem)=>(
                     <div className={style.item} onClick={()=>{chooseItem(elem)}}>
-                        <p>{elem.name}</p>
+                        <p>{elem.owner_name}</p>
                     </div>
                 ))}
             </div>

@@ -21,4 +21,3 @@ const reducer = createSlice({
 export const { setAddCarErrors, setAddPeopleErrors, setAddTechInspectionErrors, setAddAccidentErrors } = reducer.actions
 
 export const errorsReducer = reducer.reducer
-

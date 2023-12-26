@@ -26,7 +26,7 @@ export const GetCompanyModels = (brandName:string) => post('car/getcompanymodels
 export const GetCurrentCar = async (query:string) => post('car/getcars', {query: query})
 export const GetCurrentOrganization = async (query:string) => post('people/get/organization', {query: query})
 export const GetCurrentInspector = async (query:string) => post('people/get/inspector', {query: query})
-export const GetCurrentPeople = async (query:string) => post('people/get/inspector', {query: query})
+export const GetCurrentPeople = async (query:string) => post('people/get/curpeople', {query: query})
 export const AddPeoplePhys = async (CarsOwn: Array<number>, Place_street: string, Place_house: string, Place_room: string, 
     OwnerName: string, PhoneNumber: string, PassportSeries: number, PassportNumber: number, WhoPassportGived: string,
     DatePassportGived: string, DriverlicenseNumber: number, DriverlicenseGivedData: string, Categories: string[]

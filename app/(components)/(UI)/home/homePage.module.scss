@@ -23,10 +23,12 @@ $padding-count: 20px;
 .wrapper{
     z-index: -1;
     width: 100%;
-    height: 56vh;
+    height: 72vh;
     border-radius: var(--tools-border-radius);
     margin-top: $padding-count;
     box-shadow: var(--tools-shadow);
+    overflow-y: scroll;
+    padding-bottom: $padding-count;
 }
 .toolkit_window{
     width: 100%;

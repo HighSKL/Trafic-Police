@@ -13,6 +13,7 @@ import { CarItemFindCarType, OrganizationItemFindOrgType, PersonFieldType } from
 import withAuth from '@/app/modules/Auth/withAuth';
 
 
+
 function AddPeople() {
 
     enum personType {
@@ -25,7 +26,7 @@ function AddPeople() {
     const [isSendDataButtonDisabled, setIsSendDataButtonDisabled] = useState<boolean>(false)
 
     const { errorsArr, Streets, Categories } = useSelector((state:RootState)=>({ 
-        errorsArr: state.errors.AddCarPage, 
+        errorsArr: state.errors.AddPeoplePage, 
         Streets: state.lists.Streets,
         Categories: state.lists.Categories
     }))
@@ -56,8 +57,8 @@ function AddPeople() {
         { title: "Номер паспорта", errorMessage: "Укажите номер паспорта", name: "PassportNumber", validate: /^\d{6}$/ },
         { title: "Кем паспорт выдан", errorMessage: "Укажите кем выдан паспорт", name: "WhoPassportGived", validate: /\S/ },
         { title: "Дата выдачи паспорта", errorMessage: "Укажите дату выдачи паспорта", name: "DatePassportGived", date: true, validate: /\S/ },
-        { title: "Номер водительского удостоверения", errorMessage: "Укажите номер ВУ", name: "DriverlicenseNumber", validate: /\S/ },
-        { title: "Дата выдачи водительского удостоверения", errorMessage: "Укажите дату выдачи ВУ", name: "DriverlicenseGivedData", validate: /^\d{10}$/, date: true },
+        { title: "Номер водительского удостоверения", errorMessage: "Укажите номер ВУ", name: "DriverlicenseNumber", validate: /^\d{10}$/ },
+        { title: "Дата выдачи водительского удостоверения", errorMessage: "Укажите дату выдачи ВУ", name: "DriverlicenseGivedData", validate: /\S/, date: true },
         { title: "Категории", errorMessage: "Укажите категории", name: "Categories", categories: Categories }
     ]
 
@@ -93,12 +94,12 @@ function AddPeople() {
     const PhysicalPersonSendRequest = (values: FormikValues, resetForm: any) => {
         const chosenCarsId = personChosenCars.map((item: CarItemFindCarType) => item.id)
         const categories = activeCategory
-        setIsSendDataButtonDisabled(true)
+        // setIsSendDataButtonDisabled(true)
         AddPeoplePhys(chosenCarsId, values.Place_street, values.Place_house, values.Place_room, values.OwnerName, 
             values.PhoneNumber,parseInt(values.PassportSeries), parseInt(values.PassportNumber), 
             values.WhoPassportGived, values.DatePassportGived, parseInt(values.DriverlicenseNumber),
             values.DriverlicenseGivedData, categories).then(()=>{
-                setIsSendDataButtonDisabled(false)
+                // setIsSendDataButtonDisabled(false)
                 resetForm()
             })
     }
@@ -133,17 +134,17 @@ function AddPeople() {
         switch (person) {
             case personType.physical: {
                 FieldsWorkerObject.validate(fieldsPhysialPerson, values)
-                FieldsWorkerObject.sendRequest(()=>PhysicalPersonSendRequest(values, {resetForm}))
+                FieldsWorkerObject.sendRequest(()=>PhysicalPersonSendRequest(values, resetForm))
                 break
             }
             case personType.juridical: {
                 FieldsWorkerObject.validate(fieldsJuridicalPerson, values)
-                FieldsWorkerObject.sendRequest(()=>JuridicalPersonSendRequest(values, {resetForm}))
+                FieldsWorkerObject.sendRequest(()=>JuridicalPersonSendRequest(values, resetForm))
                 break
             }
             case personType.companyDriver: {
                 FieldsWorkerObject.validate(fieldsCompanyDriver, values)
-                FieldsWorkerObject.sendRequest(()=>CompanyDriverPersonSendRequest(values, {resetForm}))
+                FieldsWorkerObject.sendRequest(()=>CompanyDriverPersonSendRequest(values, resetForm))
                 break
             }
         }

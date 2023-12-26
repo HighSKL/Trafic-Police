@@ -37,7 +37,7 @@ function HomePage() {
     return (
         <div className={style.layout_wrapper}>
             <div className={style.header_container}>
-                <Header />
+                {/* <Header /> */}
             </div>
             <div className={style.horizontal_tools_container}>
                 <div className={style.menu_container}>

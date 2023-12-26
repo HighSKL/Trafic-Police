@@ -99,3 +99,9 @@ export type UserDataType = {
     id: number,
     status?: number
 }
+
+export type FindPeopleObjType = {
+    id: number;
+    owner_name: string;
+    cars: {id: number, state_number: string, brand: number, model: number}[];
+}

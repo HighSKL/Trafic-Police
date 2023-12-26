@@ -2,11 +2,12 @@ import { Field, FormikValues } from "formik";
 import { ReactNode } from "react";
 import { ErrorComponentWorker } from "./errorComponentWorker";
 import { validator } from "../validator";
-import { CarItemFindCarType, InspectorItemFindOrgType, OrganizationItemFindOrgType } from "@/app/types/types";
+import { CarItemFindCarType, FindPeopleObjType, InspectorItemFindOrgType, OrganizationItemFindOrgType } from "@/app/types/types";
 import { useState } from "react";
 import FindCarBlock from "../FindCarBlock/FindCarBlock";
 import FindOrganizationBlock from "../FindOrganizationBlock/FindOrganizationBlock";
 import FindInspectorBlock from "../FindInspectorBlock/FindInspectorBlock";
+import FindPeopleBlock from "../FindPeopleBlock/FindPeopleBlock";
 
 interface FieldObject<Object> {
     name: string;
@@ -20,6 +21,7 @@ interface FieldObject<Object> {
     findCarNeed?: boolean;
     findInspectorNeed?: boolean;
     findOrganizationNeed?: boolean;
+    findPeopleNeed?: boolean;
     categories?: string[]|null;
 }
 
@@ -38,6 +40,10 @@ interface AdditionalDataObject {
     setPersonChosenCars?: any;
     setPersonChosenOrganization?: any;
     setChosenInspector?: any;
+    people?: {
+        chosenPeople: any;
+        setChosenPeople: any;
+    }
 }
 
 export class FieldsWorker {
@@ -97,6 +103,28 @@ export class FieldsWorker {
                 }
                 <div>
                     <p>{chosenOrganization?.organization_name}</p>
+                </div>
+            </div>
+        )
+    }
+
+    private renderFindPeopleWindow(chosenPeople: FindPeopleObjType|undefined, setChosenPeople: any) {
+        const [isWindowOpen, setIsWindowOpen] = useState(false);
+
+        const div = (setIsFindOrgOpen: (value: boolean) => void) => (
+            <div className="cars_container">
+                <div onClick={() => setIsFindOrgOpen(true)} className="btn_add">Найти человека</div>
+            </div>
+        )
+
+        return (
+            <div>
+                {!chosenPeople&&div(setIsWindowOpen)}
+                {isWindowOpen&&
+                    <FindPeopleBlock closeWindow={()=>setIsWindowOpen(false)} setChoosenItem={(item: any) => setChosenPeople(item)} />
+                }
+                <div>
+                    <p>{chosenPeople?.owner_name}</p>
                 </div>
             </div>
         )
@@ -169,7 +197,7 @@ export class FieldsWorker {
                 </div>
             )
         }
-
+        // console.log(this.ErrorWorker.getErrorArr())
         return fileds.map((elem) => (
             <div className="field" key={elem.name}>
                 <p className="field_title">{elem.title}</p>
@@ -220,11 +248,11 @@ export class FieldsWorker {
                         this.renderFindCarWindow(AdditionalDataObject?.chosenCarsArr, AdditionalDataObject?.setPersonChosenCars)
                     }
                     {
-                        elem.findInspectorNeed &&
-                        this.renderFindInspectorWindow(AdditionalDataObject?.chosenInspector, AdditionalDataObject?.setChosenInspector)
+                        elem.findPeopleNeed && 
+                        this.renderFindPeopleWindow(AdditionalDataObject?.people?.chosenPeople, AdditionalDataObject?.people?.setChosenPeople)
                     }
                     {
-                        !elem.findCarNeed && !elem.findInspectorNeed &&
+                        !elem.findCarNeed && !elem.findInspectorNeed && !elem.findPeopleNeed &&
                         <Field name={elem.name} className="input" />
                     }
                 </div>
@@ -266,25 +294,17 @@ export class FieldsWorker {
                 }
             </div>
         ))
-        
-        // (
-        //     <>
-        //         <div className="part_container">
-        //             {partFieldsRender}
-        //         </div>
-        //         {otherFieldsRender}
-        //     </>
-        // )
     }
 
-    public validate<Component>(arrValidating: FieldObject<Component>[], formikValues: FormikValues, customValidate?:()=>boolean) {
+    public validate<Component>(arrValidating: FieldObject<Component>[], formikValues: FormikValues) {
         arrValidating.forEach((field) => {
             if (field.validate)
                 validator(field.validate, field.name, this.ErrorWorker.changeError, formikValues[`${field.name}`])
         })
+
     }
 
-    public sendRequest(func: () => void) {
+    public sendRequest(func: () => void) {        
         if (this.ErrorWorker.getErrorArr().length == 0)
             func()
     }
