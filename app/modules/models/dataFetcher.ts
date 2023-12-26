@@ -1,7 +1,8 @@
 import { useRouter } from "next/navigation"
-import { GetBodyModels, GetBrands, GetCompanyModels, GetStreets, GetCategories, GetCars} from "../apiservice"
+import { GetBodyModels, GetBrands, GetCompanyModels, GetStreets, GetCategories, GetCars, GetPeopleOwnCars} from "../apiservice"
 import { useDispatch } from "react-redux"
 import { setBodyModels, setBrands, setCarsData, setCategories, setModels, setStreets } from "@/app/(storage)/reducers/listsReducer"
+import { setPeopleOwnCars } from "@/app/(storage)/reducers/userDataReducer"
 
 export class DataFetcher {
     
@@ -43,4 +44,11 @@ export class DataFetcher {
         this.dispatch(setCategories(categories))
         this.router.refresh()
     }
+
+    public async GetOwnCars(userId:number){
+        const cars = await GetPeopleOwnCars(userId).then(res=>res.data)
+        this.dispatch(setPeopleOwnCars(cars))
+    }
+
+    
 }

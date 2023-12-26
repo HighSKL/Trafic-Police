@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
 import style from './findpeople.module.scss'
 import { IoMdClose } from "react-icons/io";
-import { GetCurrentInspector, GetCurrentPeople } from '../apiservice';
-import { FindPeopleObjType, InspectorItemFindOrgType } from '@/app/types/types';
+import { GetCurrentPeople } from '../apiservice';
+import { FindPeopleObjType } from '@/app/types/types';
 
 type PropsType = {
     closeWindow: any,
@@ -16,12 +16,8 @@ export default function FindPeopleBlock(props:PropsType) {
     const [items, setItems] = useState<Array<FindPeopleObjType>>([])
 
     const findItems = async () => { 
-        if(inputRef.current){
-            const itemss = await GetCurrentPeople(inputRef.current['value']).then(res=>res.data)
-            setItems(itemss)
-            console.log(itemss)
-        }
-            
+        if(inputRef.current)
+            setItems(await GetCurrentPeople(inputRef.current['value']).then(res=>res.data))       
     }
 
     const chooseItem = (item: FindPeopleObjType) => {

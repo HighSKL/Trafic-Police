@@ -7,7 +7,7 @@ const initialState = {
     CarsData: null as Car[]|null,
     Categories: ['A', 'B', 'C'] as string[]|null,
     Models: ['---'] as string[]|null,
-    Streets: ['----', 'Тюленина', 'Геодезическая', 'Авиастроителей'] as string[]|null
+    Streets: ['---', 'Тюленина', 'Геодезическая', 'Авиастроителей'] as string[]|null
 }
 
 const reducer = createSlice({

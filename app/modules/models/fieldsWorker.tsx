@@ -23,6 +23,8 @@ interface FieldObject<Object> {
     findOrganizationNeed?: boolean;
     findPeopleNeed?: boolean;
     categories?: string[]|null;
+    elementController?: {need: boolean, controller: any};
+    custom?: boolean
 }
 
 interface CarsExtend<CarType>{
@@ -252,9 +254,17 @@ export class FieldsWorker {
                         this.renderFindPeopleWindow(AdditionalDataObject?.people?.chosenPeople, AdditionalDataObject?.people?.setChosenPeople)
                     }
                     {
-                        !elem.findCarNeed && !elem.findInspectorNeed && !elem.findPeopleNeed &&
+                    
+                        elem.list&&
+                        <Field as="select" name={elem.name}>{elem.list.map((element:any) => (
+                            <option value={element} key={element}>{element}</option>
+                        ))}</Field>
+                    }
+                    {
+                        !elem.findCarNeed && !elem.findInspectorNeed && !elem.findPeopleNeed && !elem.list && !elem.custom &&
                         <Field name={elem.name} className="input" />
                     }
+                    
                 </div>
                 {
                     this.ErrorWorker?.renderErrors(elem)
@@ -300,6 +310,16 @@ export class FieldsWorker {
         arrValidating.forEach((field) => {
             if (field.validate)
                 validator(field.validate, field.name, this.ErrorWorker.changeError, formikValues[`${field.name}`])
+            if (field.elementController){
+                console.log(field.elementController.need)
+                if(
+                    field.elementController.controller === null ||
+                    field.elementController.controller === undefined || 
+                    field.elementController.controller.length === 0
+                )
+                    validator(/\S/, field.name, this.ErrorWorker.changeError, '')
+                else validator(/\S/, field.name, this.ErrorWorker.changeError, 's')
+            }
         })
 
     }

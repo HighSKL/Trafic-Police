@@ -22,8 +22,8 @@ function AddTechnicalInspectionPage() {
 
     const fields = [
         { title: "Дата выдачи технического осмотра", name: "DateInspectionTicketGived", errorMessage: "Укажите дату прохождения ТО", date: true, validate: /./},
-        { title: "Автомобиль прошедший ТО", errorMessage: "Автомобиль прошедший ТО", name: "ChosenCars", findCarNeed: true },
-        { title: "Инспектор проводивший ТО", errorMessage: "Инспектор проводивший ТО", name: "Inspector", findInspectorNeed: true },
+        { title: "Автомобиль прошедший ТО", errorMessage: "Автомобиль прошедший ТО", name: "ChosenCars", findCarNeed: true, elementController: {need: true, controller: chosenCar}},
+        { title: "Инспектор проводивший ТО", errorMessage: "Инспектор проводивший ТО", name: "Inspector", findInspectorNeed: true, elementController: {need: true, controller: chosenInspector} },
         { title: "Пробег", errorMessage: "Укажите пробег авто", name: "Mileage", validate: /\d/},
         { title: "Размер оплаты ТО", errorMessage: "Укажите размер оплаты ТО", name: "PaymentAmount", validate: /\d/},
         { title: "Размер оплаты за знак ТО", errorMessage: "Укажите размер оплаты за знак ТО", name: "PaymentTIAmount", validate: /\d/}

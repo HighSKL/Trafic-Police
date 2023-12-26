@@ -7,36 +7,43 @@ import { RootState } from '@/app/(storage)/store';
 import { Formik, Form, FormikValues } from 'formik';
 import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
 import { setAddAccidentErrors } from '@/app/(storage)/reducers/errorsReducer';
-import { CarItemFindCarType, FindPeopleObjType, InspectorItemFindOrgType } from '@/app/types/types';
+import { FindPeopleObjType, InspectorItemFindOrgType } from '@/app/types/types';
 import { DataFetcher } from '@/app/modules/models/dataFetcher';
 import withAuth from '@/app/modules/Auth/withAuth';
 
 
 function AddAccidentPage() {
 
-    const errors = useSelector((state: RootState) => state.errors.AddAccident)
+    const {errors, peopleOwnCars} = useSelector((state: RootState) => ({
+        errors: state.errors.AddAccident,
+        peopleOwnCars: state.userData.AccidentPage.peopleOwnCars
+    }))
+
     const FieldWorkerObject = new FieldsWorker(errors, setAddAccidentErrors);
+
     const [isSendDataButtonDisabled, setIsSendDataButtonDisabled] = useState<boolean>(false)
 
     const [activeChosenPeople, setActiveChosenPeople] = useState<FindPeopleObjType|null>(null)
-    const [participants, setParticipants] = useState<any>([])
+    const [participants, setParticipants] = useState<{id: number, owner_name:string, car: any}[]>([])
 
     const DataFetcherObject = new DataFetcher()
 
     const Streets = useSelector((state: RootState) => state.lists.Streets)
 
-    const [chosenCarsArr, setChosenCarsArr] = useState<CarItemFindCarType[]>()
     const [chosenInspector, setChosenInspector] = useState<InspectorItemFindOrgType | null>(null)
 
     const fields = {
         Participant: [
-            { title: "Участник ДТП", name: "DateInspectionTicketGived", errorMessage: "Укажите дату прохождения ТО", findPeopleNeed: true },
-            { title: "Автомобиль участника ДТП", errorMessage: "Автомобиль прошедший ТО", name: "ChosenCars", list: [] }
+            { title: "Участник ДТП", name: "DateInspectionTicketGived", errorMessage: "Укажите дату прохождения ТО", findPeopleNeed: true, },
+            { title: "Автомобиль участника ДТП", errorMessage: "Автомобиль участника", name: "ChosenCars", list: peopleOwnCars},
         ],
         OtherFields: [
-            { title: "Инспектор оформлявший ДТП", errorMessage: "Укажите инспектора оформлявшая ДТП", name: "Inspector", findInspectorNeed: true },
-            { title: "Улица на которой произошло ДТП", errorMessage: "Укажите улицу", name: "Street", list: Streets, validate: /\d/ },
-            { title: "Описание", errorMessage: "", name: "Description" }
+            { title: "Инспектор оформлявший ДТП", errorMessage: "Укажите инспектора оформлявшего ДТП", name: "Inspector", findInspectorNeed: true, elementController: {need: true, controller: chosenInspector} },
+            { title: "Улица на которой произошло ДТП", errorMessage: "Укажите улицу", name: "Street", list: Streets, validate: /^(?!----|\s)(\S)/ },
+            { title: "Описание", errorMessage: "Дайте описание", name: "Description", validate: /\S/ }
+        ],
+        Custom: [
+            { title: "", custom: true, errorMessage: "Укажите участников ДТП ", name: "PartAccident", elementController: {need: true, controller: participants} }
         ]
     }
 
@@ -49,16 +56,28 @@ function AddAccidentPage() {
         })()
     }, [])
 
+    useEffect(()=>{
+        if(activeChosenPeople){
+            (async()=>{
+                await DataFetcherObject.GetOwnCars(activeChosenPeople.id)
+            })()
+        }
+    }, [activeChosenPeople])
+
     const renderPartFields = FieldWorkerObject.renderPartAccidentFields(fields.Participant, {
         people: {chosenPeople: activeChosenPeople, setChosenPeople: setActiveChosenPeople}
     })
+
+    const renderCustom = FieldWorkerObject.renderPartAccidentFields(fields.Custom)
 
     const renderOtherFields = FieldWorkerObject.renderAccidentFields(fields.OtherFields, {
         chosenInspector: chosenInspector, setChosenInspector: setChosenInspector
     })
 
     const trySendRequest = (values: FormikValues, resetForm: any) => {
-
+        FieldWorkerObject.validate(fields.OtherFields,values)
+        FieldWorkerObject.validate(fields.Participant,values)
+        FieldWorkerObject.validate(fields.Custom, values)
     }
 
     const renderParticipantsFields = ()=>(
@@ -67,15 +86,29 @@ function AddAccidentPage() {
         </div>
     )
 
-    const renderChosenPart = participants.map((elem:any)=>(
+    const renderChosenPart = participants.map((elem)=>(
         <div className={style.part_item}>
-
+            <div>
+                <p>Владелец</p>
+                {elem.owner_name}
+            </div>
+            <div>
+                <p>Автомобиль</p>
+                {elem.car}
+            </div>
+            
+            
         </div>
     ))
 
-    const addParticipants = () => {
+    const addParticipants = (values:FormikValues) => {
         if(activeChosenPeople){
-            setParticipants((prev: any) => [...prev, activeChosenPeople])
+            const dto = {
+                id: activeChosenPeople.id,
+                owner_name: activeChosenPeople.owner_name,
+                car: values.ChosenCars
+            }
+            setParticipants((prev: any) => [...prev, dto])
             setActiveChosenPeople(null)
         }
     }
@@ -88,19 +121,21 @@ function AddAccidentPage() {
             <h1 className={style.title}>Зарегистрировать ДТП</h1>
             <Formik
                 initialValues={{
-                    DateInspectionTicketGived: '', ChosenCars: '', Mileage: '', PaymentAmount: '', PaymentTIAmount: ''
+                    DateInspectionTicketGived: '', ChosenCars: '', Mileage: '', PaymentAmount: '', PaymentTIAmount: '', 
+                    Street: '',Description: '', Inspector: ''
                 }}
                 onSubmit={(values: FormikValues, { resetForm }) => trySendRequest(values, resetForm)}
             >
-                {() => (
+                {({values}) => (
                     <Form className={style.from_container} id={style.form}>
                         <div className={style.chosen_part_container}>
                             {renderChosenPart}
                         </div>
                         <div className={style.part_block}>
                             {renderParticipantsFields()}
-                            <button onClick={() => addParticipants()}>Добавить участника</button>
+                            <button onClick={() => addParticipants(values)}>Добавить участника</button>
                         </div>
+                        {renderCustom}
                         <div className={style.fields_container}>
                             {renderOtherFields}
                         </div>

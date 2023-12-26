@@ -42,6 +42,7 @@ export type PersonFieldType = {
     validate?: RegExp;
     date?: boolean;
     list?: string[]|null;
+    elementController?: {need: boolean, controller: any};
 }
 
 export type CarItemFindCarType = {
@@ -103,5 +104,5 @@ export type UserDataType = {
 export type FindPeopleObjType = {
     id: number;
     owner_name: string;
-    cars: {id: number, state_number: string, brand: number, model: number}[];
+    // cars: {id: number, state_number: string, brand: number, model: number}[];
 }

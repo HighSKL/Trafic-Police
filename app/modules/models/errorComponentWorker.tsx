@@ -38,7 +38,6 @@ export class ErrorComponentWorker {
             this.router.refresh()
         }
         else{
-            console.log('set err')
             this.setFieldsErrors([...this.errorArr.filter(err=>err!==errorName)])
         }   
     }

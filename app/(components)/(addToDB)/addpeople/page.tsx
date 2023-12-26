@@ -35,6 +35,10 @@ function AddPeople() {
 
     const FieldsWorkerObject = new FieldsWorker(errorsArr, setAddPeopleErrors)
 
+    const [personChosenCars, setPersonChosenCars] = useState<CarItemFindCarType[]>([])
+    const [personChoosenOrganization, setPersonChosenOrganization] = useState<OrganizationItemFindOrgType>()
+
+
     useEffect(() => {
         (async () => {
             // initialize lists
@@ -47,7 +51,7 @@ function AddPeople() {
     }, [])
 
     const fieldsPhysialPerson: PersonFieldType[] = [
-        { title: "Автомобили во владении", errorMessage: "Укажите автомобили во владении", name: "OwnCar", findCarNeed: true },
+        { title: "Автомобили во владении", errorMessage: "Укажите автомобили во владении", name: "OwnCar", findCarNeed: true, elementController: {need: true, controller: personChosenCars}},
         { title: "Улица", errorMessage: "Укажите улицу проживания", name: "Place_street", list: Streets, validate: /^(?!---|\s)(\S)/ },
         { title: "Дом", errorMessage: "Укажите дом", name: "Place_house", validate: /\S/ },
         { title: "Квартира", errorMessage: "Укажите квартиру", name: "Place_room", validate: /\S/ },
@@ -59,11 +63,11 @@ function AddPeople() {
         { title: "Дата выдачи паспорта", errorMessage: "Укажите дату выдачи паспорта", name: "DatePassportGived", date: true, validate: /\S/ },
         { title: "Номер водительского удостоверения", errorMessage: "Укажите номер ВУ", name: "DriverlicenseNumber", validate: /^\d{10}$/ },
         { title: "Дата выдачи водительского удостоверения", errorMessage: "Укажите дату выдачи ВУ", name: "DriverlicenseGivedData", validate: /\S/, date: true },
-        { title: "Категории", errorMessage: "Укажите категории", name: "Categories", categories: Categories }
+        { title: "Категории", errorMessage: "Укажите категории", name: "Categories", categories: Categories, elementController: {need: true, controller: activeCategory} }
     ]
 
     const fieldsJuridicalPerson: PersonFieldType[] = [
-        { title: "Автомобили во владении организации", errorMessage: "Укажите автомобили во владении", name: "OwnCar", findCarNeed: true },
+        { title: "Автомобили во владении организации", errorMessage: "Укажите автомобили во владении", name: "OwnCar", findCarNeed: true, elementController: {need: true, controller: personChosenCars} },
         { title: "Улица", errorMessage: "Укажите улицу нахождения организации", name: "Place_street", list: Streets, validate: /^(?!---|\s)(\S)/ },
         { title: "Дом", errorMessage: "Укажите дом", name: "Place_house" },
         { title: "Квартира/Офис", errorMessage: "Укажите квартиру/номер офиса", name: "Place_room" },
@@ -73,7 +77,7 @@ function AddPeople() {
     ]
 
     const fieldsCompanyDriver: PersonFieldType[] = [
-        { title: "Водитель в организации", errorMessage: "Укажите орагинизацию", name: "WhereWork", findOrganizationNeed: true },
+        { title: "Водитель в организации", errorMessage: "Укажите орагинизацию", name: "WhereWork", findOrganizationNeed: true, elementController: {need: true, controller: personChoosenOrganization} },
         { title: "Улица", errorMessage: "Укажите улицу проживания", name: "Place_street", list: Streets, validate: /^(?!---|\s)(\S)/ },
         { title: "Имя водителя", errorMessage: "", name: "OwnerName" },
         { title: "Дом", errorMessage: "Укажите дом", name: "Place_house", validate: /\S/ },
@@ -85,21 +89,19 @@ function AddPeople() {
         { title: "Дата выдачи паспорта", errorMessage: "Укажите дату выдачи паспорта", name: "DatePassportGived", date: true },
         { title: "Номер водительского удостоверения", errorMessage: "Укажите номер ВУ", name: "DriverlicenseNumber" },
         { title: "Дата выдачи водительского удостоверения", errorMessage: "Укажите дату выдачи ВУ", name: "DriverlicenseGivedData", date: true },
-        { title: "Категории", errorMessage: "Укажите категории", name: "Categories", categories: Categories }
+        { title: "Категории", errorMessage: "Укажите категории", name: "Categories", categories: Categories, elementController: {need: true, controller: activeCategory} }
     ]
 
-    const [personChosenCars, setPersonChosenCars] = useState<CarItemFindCarType[]>([])
-    const [personChoosenOrganization, setPersonChosenOrganization] = useState<OrganizationItemFindOrgType>()
-
+    
     const PhysicalPersonSendRequest = (values: FormikValues, resetForm: any) => {
         const chosenCarsId = personChosenCars.map((item: CarItemFindCarType) => item.id)
         const categories = activeCategory
-        // setIsSendDataButtonDisabled(true)
+        setIsSendDataButtonDisabled(true)
         AddPeoplePhys(chosenCarsId, values.Place_street, values.Place_house, values.Place_room, values.OwnerName, 
             values.PhoneNumber,parseInt(values.PassportSeries), parseInt(values.PassportNumber), 
             values.WhoPassportGived, values.DatePassportGived, parseInt(values.DriverlicenseNumber),
             values.DriverlicenseGivedData, categories).then(()=>{
-                // setIsSendDataButtonDisabled(false)
+                setIsSendDataButtonDisabled(false)
                 resetForm()
             })
     }
