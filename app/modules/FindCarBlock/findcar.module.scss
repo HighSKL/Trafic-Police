@@ -5,8 +5,8 @@
     border-radius: 20px;
     position: absolute;
     background: #fff;
-    overflow: hidden;
-    padding-top: 10px;
+    overflow-y: scroll;
+    padding: 10px 0;
 }
 
 .closeWindowBtn{
@@ -32,6 +32,7 @@
     display: flex;
     flex-flow: column;
     gap: 5px;
+
 }
 .item{
     width: calc(100% - 20px);

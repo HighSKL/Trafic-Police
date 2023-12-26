@@ -1,7 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
 import style from './homePage.module.scss'
-import Header from '@/app/modules/Header/header';
 import Menu from '@/app/modules/Menu/Menu';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/app/(storage)/store';
@@ -29,16 +28,13 @@ function HomePage() {
 
     const renderCars = CarsData?.map((elem: any) => (
         <div className={style.car_block} key={elem.id}>
-            <div className={style.car_mark}>{elem.brand}</div>
+            <div className={style.car_mark}>{elem.brand} {elem.models}</div>
             <div className={style.car_number}>{elem.state_number} {elem.region_number}</div>
         </div>
     ))
 
     return (
         <div className={style.layout_wrapper}>
-            <div className={style.header_container}>
-                {/* <Header /> */}
-            </div>
             <div className={style.horizontal_tools_container}>
                 <div className={style.menu_container}>
                     <Menu />
