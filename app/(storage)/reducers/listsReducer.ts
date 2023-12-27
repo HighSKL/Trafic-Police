@@ -1,10 +1,14 @@
-import { Car } from "@/app/types/types"
+import { Car, CompanyType, PeopleType } from "@/app/types/types"
 import { createSlice } from "@reduxjs/toolkit"
+import { InpectionType } from '@/app/types/types'
 
 const initialState = {
     Brands: ['---', 'Audi', 'Mitsubishi', 'Toyota'] as string[]|null,
     BodyModels: ['---','Седан', 'Универсал'] as string[]|null,
     CarsData: null as Car[]|null,
+    PeopleData: null as PeopleType[]|null,
+    CompanyData: null as CompanyType[]|null,
+    InspectionData: null as InpectionType[]|null,
     Categories: ['A', 'B', 'C'] as string[]|null,
     Models: ['---'] as string[]|null,
     Streets: ['---', 'Тюленина', 'Геодезическая', 'Авиастроителей'] as string[]|null
@@ -43,10 +47,14 @@ const reducer = createSlice({
                 return elem.name
             })
             state.Streets?.unshift('---')
-        }
+        }, 
+        setPeopleData: (state, action) => { state.PeopleData = action.payload },
+        setCompanyData: (state, action) => { state.CompanyData = action.payload },
+        setInspectionData: (state, action) => { state.InspectionData = action.payload }
     }
 })
 
-export const { setBodyModels, setBrands, setCarsData, setCategories, setModels, setStreets } = reducer.actions
+export const { setBodyModels, setBrands, setCarsData, setCategories, setModels, setStreets,
+setPeopleData, setCompanyData, setInspectionData } = reducer.actions
 
 export const listsReducer = reducer.reducer

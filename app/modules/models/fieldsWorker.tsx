@@ -311,7 +311,6 @@ export class FieldsWorker {
             if (field.validate)
                 validator(field.validate, field.name, this.ErrorWorker.changeError, formikValues[`${field.name}`])
             if (field.elementController){
-                console.log(field.elementController.need)
                 if(
                     field.elementController.controller === null ||
                     field.elementController.controller === undefined || 

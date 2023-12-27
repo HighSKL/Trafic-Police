@@ -38,12 +38,17 @@ function AddTechnicalInspectionPage() {
         FieldsWorkerObject.validate(fields, values)
         FieldsWorkerObject.sendRequest(()=>{
             setIsSendDataButtonDisabled(true)
-            if(chosenCar)
-                AddTechnicalInspection(chosenCar.id, values.DateInspectionTicketGived, '' , parseInt(values.Mileage),
+            if(chosenCar&&chosenInspector){
+                AddTechnicalInspection(chosenCar.id, values.DateInspectionTicketGived, chosenInspector.id , parseInt(values.Mileage),
                 parseInt(values.PaymentAmount), parseInt(values.PaymentTIAmount)).then(()=>{
                     resetForm()
                     setIsSendDataButtonDisabled(false)
+                    setChosenCarsArr(null)
+                    setChosenInspector(null)
                 })
+            }
+            
+                
         })
     }
 
@@ -73,5 +78,5 @@ function AddTechnicalInspectionPage() {
     );
 }
 
-// export default withAuth(AddTechnicalInspectionPage)
-export default AddTechnicalInspectionPage
+export default withAuth(AddTechnicalInspectionPage)
+// export default AddTechnicalInspectionPage

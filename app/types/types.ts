@@ -104,5 +104,25 @@ export type UserDataType = {
 export type FindPeopleObjType = {
     id: number;
     owner_name: string;
-    // cars: {id: number, state_number: string, brand: number, model: number}[];
+}
+
+export type PeopleType = {
+    id: number;
+    owner_name: string;
+    passport_series: number;
+    passport_number: number;
+}
+
+export type CompanyType = {
+    id: number;
+    organization_name: string;
+    director_name: string;
+    director_phone_number: string;
+}
+
+export type InpectionType = {
+    id: number;
+    state_number: string;
+    inspection_ticket_number: number;
+    date_inssue: string;
 }

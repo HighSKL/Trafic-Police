@@ -103,6 +103,7 @@ function AddPeople() {
             values.DriverlicenseGivedData, categories).then(()=>{
                 setIsSendDataButtonDisabled(false)
                 resetForm()
+                setPersonChosenCars([])
             })
     }
 
@@ -219,5 +220,5 @@ function AddPeople() {
     );
 }
 
-// export default withAuth(AddPeople)
-export default AddPeople
+export default withAuth(AddPeople)
+// export default AddPeople

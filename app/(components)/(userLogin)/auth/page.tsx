@@ -85,5 +85,5 @@ function AuthPage() {
     );
 }
 
-// export default withOutOfAuth(AuthPage)
-export default AuthPage
+export default withOutOfAuth(AuthPage)
+// export default AuthPage

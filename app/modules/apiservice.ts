@@ -3,6 +3,9 @@ const post = async (path: string, data: Object) => (await fetch(`${process.env.N
 
 //GET
 export const GetCars = () => get('car/getcars')
+export const GetPeople = () => get('people/get/all/physpeople')
+export const GetCompany = () => get('people/get/all/jurpeople')
+export const GetInspecton = () => get('car/getinspection')
 export const GetBrands = () => get('car/getbrands')
 export const GetBodyModels = () => get('car/getbodymodels')
 export const GetStreets = () => get('streets')
@@ -57,12 +60,18 @@ export const AddCompanyDriver = async (OrganizationId: number, Place_street: str
         DriverlicenseGivedData: DriverlicenseGivedData, Categories: Categories
     }
 )
-export const AddTechnicalInspection = async (InspectedCarId: number, Date_inssue: string, InspectorId:string,
+export const AddTechnicalInspection = async (InspectedCarId: number, Date_inssue: string, InspectorId:number,
     Mileage: number, Payment_amount: number, Payment_technical_inspection_ticket_gived: number
-    ) => post('cars/add/technical_inspection', 
+    ) => post('car/add/technicalinspection', 
     {
         InspectedCarId: InspectedCarId, Date_inssue: Date_inssue, InspectorId: InspectorId, Mileage:Mileage,
         Payment_amount:Payment_amount, Payment_technical_inspection_ticket_gived: Payment_technical_inspection_ticket_gived
+    }
+)
+
+export const AddAccident = async (Place_street:string, chosenInspectorId: number, Description:string, participants: any) => post('car/add/accident', 
+    {
+        Place_street:Place_street, InspectorId: chosenInspectorId, Description: Description, participants: participants
     }
 )
 //

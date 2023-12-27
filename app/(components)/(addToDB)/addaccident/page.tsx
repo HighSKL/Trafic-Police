@@ -10,6 +10,7 @@ import { setAddAccidentErrors } from '@/app/(storage)/reducers/errorsReducer';
 import { FindPeopleObjType, InspectorItemFindOrgType } from '@/app/types/types';
 import { DataFetcher } from '@/app/modules/models/dataFetcher';
 import withAuth from '@/app/modules/Auth/withAuth';
+import { AddAccident } from '@/app/modules/apiservice';
 
 
 function AddAccidentPage() {
@@ -39,7 +40,7 @@ function AddAccidentPage() {
         ],
         OtherFields: [
             { title: "Инспектор оформлявший ДТП", errorMessage: "Укажите инспектора оформлявшего ДТП", name: "Inspector", findInspectorNeed: true, elementController: {need: true, controller: chosenInspector} },
-            { title: "Улица на которой произошло ДТП", errorMessage: "Укажите улицу", name: "Street", list: Streets, validate: /^(?!----|\s)(\S)/ },
+            { title: "Улица на которой произошло ДТП", errorMessage: "Укажите улицу", name: "Place_street", list: Streets, validate: /^(?!----|\s)(\S)/ },
             { title: "Описание", errorMessage: "Дайте описание", name: "Description", validate: /\S/ }
         ],
         Custom: [
@@ -78,6 +79,20 @@ function AddAccidentPage() {
         FieldWorkerObject.validate(fields.OtherFields,values)
         FieldWorkerObject.validate(fields.Participant,values)
         FieldWorkerObject.validate(fields.Custom, values)
+
+        FieldWorkerObject.sendRequest(()=>{
+            setIsSendDataButtonDisabled(true)
+            if(chosenInspector){
+                
+                AddAccident(values.Place_street, chosenInspector.id, values.Description, participants).then(()=>{
+                    resetForm()
+                    setParticipants([])
+                    setActiveChosenPeople(null)
+                    setChosenInspector(null)
+                    setIsSendDataButtonDisabled(false)
+                })
+            }
+        })
     }
 
     const renderParticipantsFields = ()=>(
@@ -147,5 +162,5 @@ function AddAccidentPage() {
     );
 }
 
-// export default withAuth(AddAccidentPage)
-export default AddAccidentPage
+export default withAuth(AddAccidentPage)
+// export default AddAccidentPage
