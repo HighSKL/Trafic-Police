@@ -7,7 +7,9 @@ import { RootState } from '@/app/(storage)/store';
 import { DataFetcher } from '@/app/modules/models/dataFetcher';
 import withAuth from '@/app/modules/Auth/withAuth';
 import { CompanyType, PeopleType } from '@/app/types/types';
-import {InpectionType} from '@/app/types/types'
+import Link from 'next/link';
+
+
 
 function HomePage() {
 
@@ -35,31 +37,32 @@ function HomePage() {
     })
 
     const renderCars = CarsData?.map((elem: any) => (
-        <div className={style.car_block} key={elem.id}>
-            <div className={style.car_mark}>{elem.brand} {elem.models}</div>
-            <div className={style.car_number}>{elem.state_number} {elem.region_number}</div>
-        </div>
+        <Link href={`/home/car/${elem.id}`}>
+            <div className={style.car_block} key={elem.id}>
+                <div className={style.car_mark}>Автомобиль: {elem.brand} {elem.models}</div>
+                <div className={style.car_number}>Гос номер: {elem.state_number} {elem.region_number}</div>
+            </div>
+        </Link>
     ))
 
     const renderPeople = PeopleData?.map((elem: PeopleType) => (
-        <div className={style.car_block} key={elem.id}>
-            <div className={style.car_mark}>{elem.owner_name}</div>
-            <div className={style.car_number}>{elem.passport_series} {elem.passport_number}</div>
-        </div>
+        <Link href={`/home/people/${elem.id}`}>
+            <div className={style.car_block} key={elem.id}>
+                <div className={style.car_mark}>Имя: {elem.owner_name}</div>
+                <div className={style.car_number}>Серия: {elem.passport_series}</div>
+                <div className={style.car_number}>Номер паспорта: {elem.passport_number}</div>
+            </div>
+        </Link>
     ))
 
     const renderCompany = CompanyData?.map((elem: CompanyType) => (
-        <div className={style.car_block} key={elem.id}>
-            <div className={style.car_mark}>{elem.organization_name}</div>
-            <div className={style.car_number}>{elem.director_name} {elem.director_phone_number}</div>
-        </div>
-    ))
-
-    const renderInspection = InspectionData?.map((elem: InpectionType) => (
-        <div className={style.car_block} key={elem.id}>
-            <div className={style.car_mark}>{elem.state_number}</div>
-            <div className={style.car_number}>{elem.inspection_ticket_number} {elem.date_inssue}</div>
-        </div>
+        <Link href={`/home/company/${elem.id}`}>
+            <div className={style.car_block} key={elem.id}>
+                <div className={style.car_mark}>Название организации: {elem.organization_name}</div>
+                <div className={style.car_number}>Имя директора: {elem.director_name}</div>
+                <div className={style.car_number}>Номер телефона: {elem.director_phone_number}</div>
+            </div>
+        </Link>
     ))
 
     return (
@@ -74,7 +77,6 @@ function HomePage() {
                             <li className={activeWindow == Windows.cars ? style.active : style.li} onClick={() => setActiveWindow(Windows.cars)}>Автомобили</li>
                             <li className={activeWindow == Windows.people ? style.active : style.li} onClick={() => setActiveWindow(Windows.people)}>Люди</li>
                             <li className={activeWindow == Windows.company ? style.active : style.li} onClick={() => setActiveWindow(Windows.company)}>Организации</li>
-                            <li className={activeWindow == Windows.TO ? style.active : style.li} onClick={() => setActiveWindow(Windows.TO)}>Технический осмотр</li>
                         </ul>
                     </div>
                     <div className={style.wrapper}>
@@ -83,7 +85,6 @@ function HomePage() {
                                 {activeWindow == Windows.cars&&renderCars}
                                 {activeWindow == Windows.people&&renderPeople}
                                 {activeWindow == Windows.company&&renderCompany}
-                                {activeWindow == Windows.TO&&renderInspection}
                             </div>
                         </div>
                     </div>
@@ -93,5 +94,5 @@ function HomePage() {
     );
 }
 
-export default withAuth(HomePage);
-// export default HomePage
+// export default withAuth(HomePage);
+export default HomePage

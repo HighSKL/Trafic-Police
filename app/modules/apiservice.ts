@@ -12,6 +12,7 @@ export const GetStreets = () => get('streets')
 export const GetCategories = () => get('categories')
 export const GetUser = () => get('login/getuser')
 //POST
+export const getCurrCar = (query: number) => post('car/getcurrentcardata', {query: query})
 export const authUser = (email: string, password: string) => post('login', { email, password })
 export const RegCar = async (StateNumber:string, RegionNumber: number, CarModel: string, 
     BodyNumber: number, ChassisNumber: number,EngineNumber: number, BodyModel: string,Color: string,
@@ -74,5 +75,12 @@ export const AddAccident = async (Place_street:string, chosenInspectorId: number
         Place_street:Place_street, InspectorId: chosenInspectorId, Description: Description, participants: participants
     }
 )
-//
 
+export const GetCurrentInspection = async (carid: number) => post('car/getinspection', {carid: carid})
+export const GetCurrPeople = async (query: number) => post('people/get/currentpeople', {query: query})
+//
+//DELETE 
+export const deleteCar = (query: number) => post('car/delete', {query: query})
+//UPDATE
+export const ChangeDataCars = (column_name:string, newValue: any, carId: number) => post('car/update/car', {column_name: column_name, newValue: newValue, carId:carId})
+export const ChangeDataInspection = (column_name:string, newValue: any, carId: number) => post('car/update/inspection', {column_name: column_name, newValue: newValue, carId:carId})

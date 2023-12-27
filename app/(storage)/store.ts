@@ -4,13 +4,15 @@ import { listsReducer } from "./reducers/listsReducer";
 import { errorsReducer } from "./reducers/errorsReducer";
 import { loginReducer } from "./reducers/loginReducer";
 import { userDataReducer } from "./reducers/userDataReducer";
+import { showDataReducer } from "./reducers/showDataReducer";
 
 export const store = configureStore({
     reducer: {
         errors: errorsReducer,
         lists: listsReducer,
         login: loginReducer,
-        userData: userDataReducer
+        userData: userDataReducer,
+        showData: showDataReducer
     }
 })
 

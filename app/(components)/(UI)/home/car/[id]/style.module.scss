@@ -1,0 +1,24 @@
+.fields_container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.funс_block{
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+    button{
+        max-width: 100px;
+    }
+}
+.redirect_link, .delete_button, .red_button{
+    cursor: pointer;
+    color: black;
+}
+
+.formikPrev{
+    margin: 0 auto;
+}

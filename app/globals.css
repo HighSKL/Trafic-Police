@@ -93,3 +93,11 @@ body{margin:0; padding: 0;}
   color: white;
 }
 
+.field_item_block{
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.field_value{
+  margin-top: 10px;
+}

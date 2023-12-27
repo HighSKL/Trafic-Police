@@ -29,7 +29,6 @@ export default function withAuth<T extends injectedProps>(WrappedComponent: Reac
             if (!userData) {
                 (async () => {
                     const data: UserDataType|ErrorResponesType = await GetUser().then(res => res)
-                    console.log(data)
                     if (data?.status === ActiveUserErrors.UserNotAuthorized)
                         router.push('/auth')
                     else {

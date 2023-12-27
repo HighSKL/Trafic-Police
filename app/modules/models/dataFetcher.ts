@@ -12,7 +12,6 @@ export class DataFetcher {
     public async getCarsData(){
         const carsfromDB = await GetCars().then(res => res.data)
         this.dispatch(setCarsData(carsfromDB))
-        this.router.refresh();
     }
 
     public async getBodyModels(){

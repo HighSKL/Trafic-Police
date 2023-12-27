@@ -10,6 +10,7 @@ import FindInspectorBlock from "../FindInspectorBlock/FindInspectorBlock";
 import FindPeopleBlock from "../FindPeopleBlock/FindPeopleBlock";
 
 interface FieldObject<Object> {
+    value: string|any[]
     name: string;
     title: string;
     errorMessage: string;
@@ -28,7 +29,6 @@ interface FieldObject<Object> {
 }
 
 interface CarsExtend<CarType>{
-    id: number;
     brand: string;
     model: string;
 }
@@ -49,7 +49,7 @@ interface AdditionalDataObject {
     }
 }
 
-export class FieldsWorker {
+export class EditFieldsWorker {
 
     private ErrorWorker: ErrorComponentWorker
 
@@ -83,7 +83,7 @@ export class FieldsWorker {
                 {isWindowOpen &&
                     <FindCarBlock
                         closeWindow={() => setIsWindowOpen(false)}
-                        setChoosenItem={(item: CarItemFindCarType) => {Array.isArray(chosenCars)?setPersonChosenCars((prevState: string[]) => [...prevState, item]):setPersonChosenCars(item)}} />
+                        setChoosenItem={(item: CarItemFindCarType) => Array.isArray(chosenCars)?setPersonChosenCars((prevState: string[]) => [...prevState, item]):setPersonChosenCars(item)} />
                 }
             </div>
         )
@@ -141,7 +141,7 @@ export class FieldsWorker {
                 <div onClick={() => setIsFindOrgOpen(true)} className="btn_add">Добавить инспектора</div>
             </div>
         )
-
+        console.log(chosenInspector)
         return (
             <div>
                 {!chosenInspector&&div(setIsWindowOpen)}
@@ -150,6 +150,8 @@ export class FieldsWorker {
                 }
                 <div>
                     <p>{chosenInspector?.name}</p>
+                    {chosenInspector&&<p style={{cursor:'pointer'}}onClick={()=>setChosenInspector(null)}>Х</p>}
+                    
                 </div>
             </div>
         )
@@ -161,9 +163,13 @@ export class FieldsWorker {
                 <div className="field" key={elem.name}>
                     <p className="field_title">{elem.title}</p>
                     {
+                        elem.findInspectorNeed &&
+                        this.renderFindInspectorWindow(AdditionalDataObject?.chosenInspector, AdditionalDataObject?.setChosenInspector)
+                    }
+                    {
                         elem.list ?
                             elem.isBrands ?
-                                <select name="" id="" ref={AdditionalDataObject?.ref} onChange={elem.changeFieldFunc ? elem.changeFieldFunc : () => { }}>
+                                <select name="" id="" ref={AdditionalDataObject?.ref} defaultValue={elem.value} onChange={elem.changeFieldFunc ? elem.changeFieldFunc : () => { }}>
                                     {elem.list.map((element) => (
                                         <option value={element} key={element}>{element}</option>
                                     ))}
@@ -173,9 +179,10 @@ export class FieldsWorker {
                                     <option value={element} key={element}>{element}</option>
                                 ))}</Field>
                             : elem.date ?
-                                <Field type="date" name={elem.name} className="input" />
-                                : <Field name={elem.name} className="input" />
+                                <Field type="date" name={elem.name} className="input"/>
+                                : !elem.findInspectorNeed&& <Field name={elem.name} className="input"/>
                     }
+                    
                     {
                         this.ErrorWorker?.renderErrors(elem)
                     }
@@ -200,6 +207,7 @@ export class FieldsWorker {
                 </div>
             )
         }
+        // console.log(this.ErrorWorker.getErrorArr())
         return fileds.map((elem) => (
             <div className="field" key={elem.name}>
                 <p className="field_title">{elem.title}</p>
