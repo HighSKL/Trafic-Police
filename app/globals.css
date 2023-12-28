@@ -7,17 +7,17 @@ body{margin:0; padding: 0;}
 @media (prefers-color-scheme: dark) {
     :root{
       /* auth/registrations page */
-      --bg-color: rgb(24, 24, 24);
-      --window-color: rgb(41, 41, 48);
-      --field-color: 1px solid #ffffff93;
-      --field-color-active: 1px solid #ffffff;
-      --redirect-link-color: #fff;
+      /* --bg-color: rgb(24, 24, 24); */
+      /* --window-color: rgb(41, 41, 48); */
+      --field-color: 1px solid #2F3034;
+      --field-color-active: 1px solid #2F3034;
+      /* --redirect-link-color: #fff; */
       --window-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.50);
-      --desc-error-password-color: #A0A0A0;
+      /* --desc-error-password-color: #A0A0A0; */
       /* home page  */
-      --home-bg-color: rgb(16, 18, 14);
+      /* --home-bg-color: rgb(16, 18, 14); */
       --tools-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.232);
-      --home-page-color: #fff;
+      /* --home-page-color: #fff; */
     }
 }
 

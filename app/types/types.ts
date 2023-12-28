@@ -126,3 +126,12 @@ export type InpectionType = {
     inspection_ticket_number: number;
     date_inssue: string;
 }
+
+
+export type DriverCompanyType = {
+    id: number;
+    organization_name: string;
+    passport_series: number;
+    passport_number: number;
+    owner_name: string;
+}

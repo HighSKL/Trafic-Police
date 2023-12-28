@@ -1,10 +1,11 @@
 const get = async (path: string) => (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${path}`, { cache: 'no-store' }).then(res=>res.json()))
-const post = async (path: string, data: Object) => (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${path}`, {method: "POST", body: JSON.stringify(data)}).then(res=>res.json()))
+const post = async (path: string, data: Object) => (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${path}`, {cache: 'no-store', method: "POST", body: JSON.stringify(data)}).then(res=>res.json()))
 
 //GET
 export const GetCars = () => get('car/getcars')
 export const GetPeople = () => get('people/get/all/physpeople')
 export const GetCompany = () => get('people/get/all/jurpeople')
+export const GetCompanyDriver = () => get('people/get/all/companydriver')
 export const GetInspecton = () => get('car/getinspection')
 export const GetBrands = () => get('car/getbrands')
 export const GetBodyModels = () => get('car/getbodymodels')
@@ -13,6 +14,8 @@ export const GetCategories = () => get('categories')
 export const GetUser = () => get('login/getuser')
 //POST
 export const getCurrCar = (query: number) => post('car/getcurrentcardata', {query: query})
+export const GetCurrCompanyDriver = (query: number) => post('people/get/curretncompanydriver', {query: query})
+export const GetAllPeopleCars = (query: number) => post('car/getpeoplecars', {query: query})
 export const authUser = (email: string, password: string) => post('login', { email, password })
 export const RegCar = async (StateNumber:string, RegionNumber: number, CarModel: string, 
     BodyNumber: number, ChassisNumber: number,EngineNumber: number, BodyModel: string,Color: string,
@@ -78,9 +81,17 @@ export const AddAccident = async (Place_street:string, chosenInspectorId: number
 
 export const GetCurrentInspection = async (carid: number) => post('car/getinspection', {carid: carid})
 export const GetCurrPeople = async (query: number) => post('people/get/currentpeople', {query: query})
+export const GetCurrCompany = async (query: number) => post('people/get/currentcompany', {query: query})
 //
 //DELETE 
 export const deleteCar = (query: number) => post('car/delete', {query: query})
+export const deletePeoplePhys = (query: number) => post('people/delete/phys', {query: query})
+export const deletePeopleJur = (query: number) => post('people/delete/jur', {query: query})
 //UPDATE
 export const ChangeDataCars = (column_name:string, newValue: any, carId: number) => post('car/update/car', {column_name: column_name, newValue: newValue, carId:carId})
 export const ChangeDataInspection = (column_name:string, newValue: any, carId: number) => post('car/update/inspection', {column_name: column_name, newValue: newValue, carId:carId})
+export const ChangeDataPhys = (column_name:string, newValue: any, peopleId: number) => post('people/update/physpeople', {column_name: column_name, newValue: newValue, peopleId:peopleId})
+export const ChangeDataJur = (column_name:string, newValue: any, companyId: number) => post('people/update/jurpeople', {column_name: column_name, newValue: newValue, companyId:companyId})
+
+
+

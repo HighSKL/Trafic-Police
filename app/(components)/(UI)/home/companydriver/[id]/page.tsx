@@ -5,7 +5,7 @@ import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/(storage)/store';
 import { setChosenData, setInspectionData, setPeopleData } from '@/app/(storage)/reducers/showDataReducer';
-import { ChangeDataCars, ChangeDataInspection, ChangeDataPhys, GetAllPeopleCars, GetCurrPeople, GetCurrentInspection, deleteCar, deletePeoplePhys, getCurrCar } from '@/app/modules/apiservice';
+import { ChangeDataCars, ChangeDataInspection, ChangeDataPhys, GetAllPeopleCars, GetCurrCompanyDriver, GetCurrPeople, GetCurrentInspection, deleteCar, deletePeoplePhys, getCurrCar } from '@/app/modules/apiservice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { EditFieldsWorker } from '@/app/modules/models/editFieldsWorker';
@@ -39,7 +39,7 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
 
     useEffect(() => {
         (async () => {
-            const peopleData = await GetCurrPeople(id).then(res => res.data)
+            const peopleData = await GetCurrCompanyDriver(id).then(res => res.data)
             dispatch(setPeopleData(peopleData))
             // const cars = await GetAllPeopleCars(activeData.id).then(res => res.data)
             // console.log(cars)

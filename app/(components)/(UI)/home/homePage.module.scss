@@ -84,12 +84,13 @@ $padding-count: 20px;
 }
 
 .car_block{
-    width: 98%;
+    width: calc(98% - 10px);
     margin: 0 auto;
-    height: 60px;
+    height: auto;
     margin-top: 10px;
     border: 1px solid rgba(0, 0, 0, 0.263);
     border-radius: 10px;
+    padding: 10px;
     color: black;
     text-decoration: none !important;
     &:last-child{

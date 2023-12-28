@@ -1,4 +1,4 @@
-import { Car, CompanyType, PeopleType } from "@/app/types/types"
+import { Car, CompanyType, DriverCompanyType, PeopleType } from "@/app/types/types"
 import { createSlice } from "@reduxjs/toolkit"
 import { InpectionType } from '@/app/types/types'
 
@@ -9,6 +9,7 @@ const initialState = {
     PeopleData: null as PeopleType[]|null,
     CompanyData: null as CompanyType[]|null,
     InspectionData: null as InpectionType[]|null,
+    CompanyDriverType: null as DriverCompanyType[]|null,
     Categories: ['A', 'B', 'C'] as string[]|null,
     Models: ['---'] as string[]|null,
     Streets: ['---', 'Тюленина', 'Геодезическая', 'Авиастроителей'] as string[]|null
@@ -50,11 +51,12 @@ const reducer = createSlice({
         }, 
         setPeopleData: (state, action) => { state.PeopleData = action.payload },
         setCompanyData: (state, action) => { state.CompanyData = action.payload },
+        setDriverCompanyData: (state, action) => { state.CompanyDriverType = action.payload },
         setInspectionData: (state, action) => { state.InspectionData = action.payload }
     }
 })
 
 export const { setBodyModels, setBrands, setCarsData, setCategories, setModels, setStreets,
-setPeopleData, setCompanyData, setInspectionData } = reducer.actions
+setPeopleData, setCompanyData, setInspectionData,setDriverCompanyData } = reducer.actions
 
 export const listsReducer = reducer.reducer

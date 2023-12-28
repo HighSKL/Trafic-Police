@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation"
-import { GetBodyModels, GetBrands, GetCompanyModels, GetStreets, GetCategories, GetCars, GetPeopleOwnCars, GetPeople, GetCompany, GetInspecton} from "../apiservice"
+import { GetBodyModels, GetBrands, GetCompanyModels, GetStreets, GetCategories, GetCars, GetPeopleOwnCars, GetPeople, GetCompany, GetInspecton, GetCompanyDriver} from "../apiservice"
 import { useDispatch } from "react-redux"
-import { setBodyModels, setBrands, setCarsData, setCategories, setCompanyData, setInspectionData, setModels, setPeopleData, setStreets } from "@/app/(storage)/reducers/listsReducer"
+import { setBodyModels, setBrands, setCarsData, setCategories, setCompanyData, setDriverCompanyData, setInspectionData, setModels, setPeopleData, setStreets } from "@/app/(storage)/reducers/listsReducer"
 import { setPeopleOwnCars } from "@/app/(storage)/reducers/userDataReducer"
 
 export class DataFetcher {
@@ -63,5 +63,8 @@ export class DataFetcher {
         const inspection = await GetInspecton().then(res=>res.data)
         this.dispatch(setInspectionData(inspection))
     }
-    
+    public async GetCompanyDriver(){
+        const data = await GetCompanyDriver().then(res=>res.data)
+        this.dispatch(setDriverCompanyData(data))
+    }
 }
