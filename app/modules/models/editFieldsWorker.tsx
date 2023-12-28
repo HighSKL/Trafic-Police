@@ -69,9 +69,12 @@ export class EditFieldsWorker {
         return (
             <div>
                 {Array.isArray(chosenCars) ? chosenCars.map((car: any) => (
-                    <div>
+                    <div style={{border:'1px solid black', margin: '5px', borderRadius: '10px'}}>
+                        <p style={{cursor:'pointer', color:'red'}} onClick={()=>setPersonChosenCars(chosenCars.filter((elem:any)=>elem != car))}>X</p>
                         <p>{car.brand}</p>
-                        <p>{car.model}</p>
+                        <p>{car.models}</p>
+                        <p>{car.state_number}</p>
+
                     </div>
                 )):
                     <div>
@@ -141,7 +144,6 @@ export class EditFieldsWorker {
                 <div onClick={() => setIsFindOrgOpen(true)} className="btn_add">Добавить инспектора</div>
             </div>
         )
-        console.log(chosenInspector)
         return (
             <div>
                 {!chosenInspector&&div(setIsWindowOpen)}
@@ -207,7 +209,7 @@ export class EditFieldsWorker {
                 </div>
             )
         }
-        // console.log(this.ErrorWorker.getErrorArr())
+
         return fileds.map((elem) => (
             <div className="field" key={elem.name}>
                 <p className="field_title">{elem.title}</p>

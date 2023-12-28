@@ -92,6 +92,7 @@ export const ChangeDataCars = (column_name:string, newValue: any, carId: number)
 export const ChangeDataInspection = (column_name:string, newValue: any, carId: number) => post('car/update/inspection', {column_name: column_name, newValue: newValue, carId:carId})
 export const ChangeDataPhys = (column_name:string, newValue: any, peopleId: number) => post('people/update/physpeople', {column_name: column_name, newValue: newValue, peopleId:peopleId})
 export const ChangeDataJur = (column_name:string, newValue: any, companyId: number) => post('people/update/jurpeople', {column_name: column_name, newValue: newValue, companyId:companyId})
+export const ChangePeopleCarOwn = (newCarsArr:any[], peopleId: number) => post('car/update/peopleowncar', {newCarsArr: newCarsArr, peopleId: peopleId})
 
 
 

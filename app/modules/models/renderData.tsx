@@ -28,12 +28,7 @@ export class RenderData {
         return fileds.length == 0 ? <></> :
             fileds.map((elem) => (
                 <div className="field_item_block" key={elem.name}>
-                    {elem.value as Array<any>?<>
-                    {elem.value.map((value:any) =>(
-                        <div>{value.brand} {value.model}</div>
-                    ))}
-                    </>:
-                    
+                    {
                     <>
                         <div className="title">{elem.title}</div>
                         <div className="field_value">{elem.value}</div>
@@ -49,8 +44,14 @@ export class RenderData {
             fileds.map((elem) => (
                 <div className="field_item_block" key={elem.name}>
                     {
+                        elem.carsList?.length == 0&&<>Автомобили не найдены</>
+                    }
+                    {
                         elem.carsList?.map((value:any) =>(
-                            <div>{value.brand} {value.model}</div>
+                            <> 
+                                <div>{value.brand} {value.models}</div>
+                                <div>{value.state_number}</div>
+                            </>
                         ))
                     }
                     {!elem.carsList && 
