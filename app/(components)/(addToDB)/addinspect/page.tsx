@@ -78,5 +78,5 @@ function AddTechnicalInspectionPage() {
     );
 }
 
-export default withAuth(AddTechnicalInspectionPage)
-// export default AddTechnicalInspectionPage
+// export default withAuth(AddTechnicalInspectionPage)
+export default AddTechnicalInspectionPage

@@ -10,7 +10,7 @@ import FindInspectorBlock from "../FindInspectorBlock/FindInspectorBlock";
 import FindPeopleBlock from "../FindPeopleBlock/FindPeopleBlock";
 
 interface FieldObject<Object> {
-    value: string|any[]
+    value: string|any[]|any
     name: string;
     title: string;
     errorMessage: string;
@@ -74,7 +74,6 @@ export class EditFieldsWorker {
                         <p>{car.brand}</p>
                         <p>{car.models}</p>
                         <p>{car.state_number}</p>
-
                     </div>
                 )):
                     <div>
@@ -109,6 +108,7 @@ export class EditFieldsWorker {
                 }
                 <div>
                     <p>{chosenOrganization?.organization_name}</p>
+                    {chosenOrganization&&<p style={{cursor:'pointer'}}onClick={()=>setPersonChosenOrganization(null)}>Х</p>}
                 </div>
             </div>
         )
@@ -164,6 +164,10 @@ export class EditFieldsWorker {
             fileds.map((elem) => (
                 <div className="field" key={elem.name}>
                     <p className="field_title">{elem.title}</p>
+                    {
+                        elem.findOrganizationNeed &&
+                        this.renderFindOrganizationWindow(AdditionalDataObject?.chosenOrganization, AdditionalDataObject?.setPersonChosenOrganization)
+                    }
                     {
                         elem.findInspectorNeed &&
                         this.renderFindInspectorWindow(AdditionalDataObject?.chosenInspector, AdditionalDataObject?.setChosenInspector)

@@ -103,12 +103,18 @@ export type UserDataType = {
 
 export type FindPeopleObjType = {
     id: number;
-    owner_name: string;
+    first_name: string;
+    last_name: string;
+    patronymic?: string;
+    passport_series: number;
+    passport_number: number;
 }
 
 export type PeopleType = {
     id: number;
-    owner_name: string;
+    first_name: string;
+    last_name: string;
+    patronymic: string;
     passport_series: number;
     passport_number: number;
 }
@@ -116,7 +122,9 @@ export type PeopleType = {
 export type CompanyType = {
     id: number;
     organization_name: string;
-    director_name: string;
+    director_first_name: string;
+    director_last_name: string;
+    director_patronymic_name: string;
     director_phone_number: string;
 }
 
@@ -133,5 +141,15 @@ export type DriverCompanyType = {
     organization_name: string;
     passport_series: number;
     passport_number: number;
-    owner_name: string;
+    first_name: string;
+    last_name: string;
+    patronymic: string;
+}
+
+export type TraficAccidentDataType = {
+    accident_id: number;
+    insp_name: string;
+    street: string;
+    description: string;
+    parts: any
 }

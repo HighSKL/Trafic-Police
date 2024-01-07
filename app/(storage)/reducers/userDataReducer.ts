@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     AccidentPage: {
-        peopleOwnCars: ['---'] as string[]
+        peopleOwnCars: ['---'] as string[],
+        candidatePeople: null as any|null
     }
 }
 
@@ -15,10 +16,13 @@ const reducer = createSlice({
             (`${element.state_number} ${element.brand} ${element.models}`))
             state.AccidentPage.peopleOwnCars?.unshift('---')
         },
+        setCandidatePeople: (state, action)=>{
+            state.AccidentPage.candidatePeople = action.payload
+        }
 
     }
 })
 
-export const { setPeopleOwnCars } = reducer.actions
+export const { setPeopleOwnCars, setCandidatePeople } = reducer.actions
 
 export const userDataReducer = reducer.reducer

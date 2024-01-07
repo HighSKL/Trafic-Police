@@ -11,7 +11,7 @@ export async function POST(req: Request){
     await sql`INSERT INTO company_driver VALUES (
         ${owner_id}, ${body.OrganizationId}, ${street}, ${body.Place_house}, ${body.Place_room}, ${body.PassportSeries},
         ${body.PassportNumber}, ${body.WhoPassportGived}, ${body.DatePassportGived}, ${body.DriverlicenseNumber}, 
-        ${body.DriverlicenseGivedData}, ${body.OwnerName}, ${body.PhoneNumber})`
+        ${body.DriverlicenseGivedData}, ${body.PhoneNumber}, ${body.FirstName}, ${body.LastName}, ${body.Patronymic})`
 
     // add people categories to db
     body.Categories.forEach( async (category: string) =>{

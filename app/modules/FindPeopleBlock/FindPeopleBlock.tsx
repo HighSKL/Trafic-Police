@@ -17,7 +17,7 @@ export default function FindPeopleBlock(props:PropsType) {
 
     const findItems = async () => { 
         if(inputRef.current)
-            setItems(await GetCurrentPeople(inputRef.current['value']).then(res=>res.data))       
+            setItems(await GetCurrentPeople(isNaN(parseInt(inputRef.current['value']))?0:parseInt(inputRef.current['value'])).then(res=>res.data))       
     }
 
     const chooseItem = (item: FindPeopleObjType) => {
@@ -28,11 +28,12 @@ export default function FindPeopleBlock(props:PropsType) {
     return (
         <div className={style.wrapper}>
             <div className={style.closeWindowBtn} onClick={props.closeWindow}><IoMdClose /></div>
-            <input className={style.input} ref={inputRef} type="text" onChange={findItems} placeholder='Начните вводить имя человека'/>
+            <input className={style.input} ref={inputRef} type="text" onChange={findItems} placeholder='Начните вводить номер паспорта человека'/>
             <div className={style.blocks_container}>
                 {items.map((elem)=>(
                     <div className={style.item} onClick={()=>{chooseItem(elem)}}>
-                        <p>{elem.owner_name}</p>
+                        <p>Серия/номер паспорта: {elem.passport_series}/{elem.passport_number}</p>
+                        <p>{elem.first_name} {elem.last_name}</p>
                     </div>
                 ))}
             </div>

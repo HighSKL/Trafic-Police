@@ -10,7 +10,7 @@ export async function POST(req: Request){
     // add organization to db
     await sql`INSERT INTO juridical_person VALUES (
         ${owner_id}, ${street}, ${body.Place_house}, ${body.Place_room}, ${body.Organization_name}, 
-        ${body.DirectorName}, ${body.Directorphonenumber})`
+        ${body.Directorphonenumber}, ${body.DirectorFirstName}, ${body.DirectorLastName}, ${body.DirectorPatronymicName})`
     
     // set cars owner into db
     if(body.CarsOwn.length > 0){

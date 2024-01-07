@@ -1,31 +1,36 @@
 'use client'
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import style from './accident.module.scss';
 import { RootState } from '@/app/(storage)/store';
 import { Formik, Form, FormikValues } from 'formik';
 import { FieldsWorker } from '@/app/modules/models/fieldsWorker';
 import { setAddAccidentErrors } from '@/app/(storage)/reducers/errorsReducer';
-import { FindPeopleObjType, InspectorItemFindOrgType } from '@/app/types/types';
+import { CarItemFindCarType, FindPeopleObjType, InspectorItemFindOrgType } from '@/app/types/types';
 import { DataFetcher } from '@/app/modules/models/dataFetcher';
 import withAuth from '@/app/modules/Auth/withAuth';
-import { AddAccident } from '@/app/modules/apiservice';
-
+import { AddAccident, GetPeopleByCar } from '@/app/modules/apiservice';
+import { setCandidatePeople, setPeopleOwnCars } from '@/app/(storage)/reducers/userDataReducer';
 
 function AddAccidentPage() {
 
-    const {errors, peopleOwnCars} = useSelector((state: RootState) => ({
+    const {errors, peopleOwnCars, candidatePeople} = useSelector((state: RootState) => ({
         errors: state.errors.AddAccident,
-        peopleOwnCars: state.userData.AccidentPage.peopleOwnCars
+        peopleOwnCars: state.userData.AccidentPage.peopleOwnCars,
+        candidatePeople: state.userData.AccidentPage.candidatePeople
     }))
+
+    const dispatch = useDispatch()
 
     const FieldWorkerObject = new FieldsWorker(errors, setAddAccidentErrors);
 
     const [isSendDataButtonDisabled, setIsSendDataButtonDisabled] = useState<boolean>(false)
 
-    const [activeChosenPeople, setActiveChosenPeople] = useState<FindPeopleObjType|null>(null)
-    const [participants, setParticipants] = useState<{id: number, owner_name:string, car: any}[]>([])
+    const [activeChosenPeople, setActiveChosenPeople] = useState<FindPeopleObjType|null>(candidatePeople)
+    const [activeChosenCar, setActiveChosenCar] = useState<CarItemFindCarType|null>(null)
+    const [participants, setParticipants] = useState<{id: number, first_name:string, last_name:string, passport_series:number, passport_number:number, car: any}[]>([])
+
 
     const DataFetcherObject = new DataFetcher()
 
@@ -35,8 +40,8 @@ function AddAccidentPage() {
 
     const fields = {
         Participant: [
-            { title: "Участник ДТП", name: "DateInspectionTicketGived", errorMessage: "Укажите дату прохождения ТО", findPeopleNeed: true, },
-            { title: "Автомобиль участника ДТП", errorMessage: "Автомобиль участника", name: "ChosenCars", list: peopleOwnCars},
+            { title: "Участник ДТП", name: "DateInspectionTicketGived", errorMessage: "Укажите дату прохождения ТО", list: peopleOwnCars, findPeopleNeed: true, },
+            { title: "Автомобиль участника ДТП", errorMessage: "Автомобиль участника", name: "ChosenCars", list: peopleOwnCars, findCarNeed: true},
         ],
         OtherFields: [
             { title: "Инспектор оформлявший ДТП", errorMessage: "Укажите инспектора оформлявшего ДТП", name: "Inspector", findInspectorNeed: true, elementController: {need: true, controller: chosenInspector} },
@@ -51,6 +56,7 @@ function AddAccidentPage() {
     useEffect(() => {
         (async () => {
             // initialize lists
+            setActiveChosenPeople(candidatePeople)
             if (!Streets)
                 await DataFetcherObject.getStreets()
             //
@@ -58,15 +64,28 @@ function AddAccidentPage() {
     }, [])
 
     useEffect(()=>{
-        if(activeChosenPeople){
+        if(activeChosenPeople&&!activeChosenCar){
             (async()=>{
                 await DataFetcherObject.GetOwnCars(activeChosenPeople.id)
             })()
         }
     }, [activeChosenPeople])
 
+    useEffect(()=>{
+
+            (async()=>{
+                if (activeChosenCar&&!activeChosenPeople){
+                    const pep = await GetPeopleByCar(activeChosenCar.id).then(res=>res.data)
+                    dispatch(setCandidatePeople(pep))
+                }
+            })()
+    }, [activeChosenCar])
+
     const renderPartFields = FieldWorkerObject.renderPartAccidentFields(fields.Participant, {
-        people: {chosenPeople: activeChosenPeople, setChosenPeople: setActiveChosenPeople}
+        accident: {
+            chosenPeople: activeChosenPeople, setChosenPeople: setActiveChosenPeople, 
+            chosenCars: activeChosenCar, setChosenCars: setActiveChosenCar
+        }
     })
 
     const renderCustom = FieldWorkerObject.renderPartAccidentFields(fields.Custom)
@@ -103,9 +122,15 @@ function AddAccidentPage() {
 
     const renderChosenPart = participants.map((elem)=>(
         <div className={style.part_item}>
+            <div style={{position:'absolute', marginTop:'-10px', cursor:'pointer'}} onClick={()=>{
+                setParticipants((prevState:any)=>
+                    prevState.filter((element:any)=>elem.id !== element.id)
+                )
+            }}>X</div>
             <div>
                 <p>Владелец</p>
-                {elem.owner_name}
+                <p>Серия/номер паспорта: {elem.passport_series}/{elem.passport_number}</p>
+                <p>{elem.first_name} {elem.last_name}</p>
             </div>
             <div>
                 <p>Автомобиль</p>
@@ -120,11 +145,32 @@ function AddAccidentPage() {
         if(activeChosenPeople){
             const dto = {
                 id: activeChosenPeople.id,
-                owner_name: activeChosenPeople.owner_name,
-                car: values.ChosenCars
+                first_name: activeChosenPeople.first_name,
+                last_name: activeChosenPeople.last_name,
+                car: values.ChosenCars,
+                passport_series: activeChosenPeople.passport_series, 
+                passport_number: activeChosenPeople.passport_number,
             }
             setParticipants((prev: any) => [...prev, dto])
             setActiveChosenPeople(null)
+            dispatch(setPeopleOwnCars(['---']))
+            dispatch(setCandidatePeople(null))
+            setActiveChosenCar(null)
+        }
+        else if(candidatePeople&&activeChosenCar){
+            const dto = {
+                id: candidatePeople.id,
+                first_name: candidatePeople.first_name,
+                last_name: candidatePeople.last_name,
+                car: `${activeChosenCar.state_number} ${activeChosenCar.brand} ${activeChosenCar.model}`,
+                passport_series: candidatePeople.passport_series, 
+                passport_number: candidatePeople.passport_number,
+            }
+            setParticipants((prev: any) => [...prev, dto])
+            setActiveChosenPeople(null)
+            dispatch(setPeopleOwnCars(['---']))
+            dispatch(setCandidatePeople(null))
+            setActiveChosenCar(null)
         }
     }
 
@@ -148,7 +194,7 @@ function AddAccidentPage() {
                         </div>
                         <div className={style.part_block}>
                             {renderParticipantsFields()}
-                            <button onClick={() => addParticipants(values)}>Добавить участника</button>
+                            <button type='button' onClick={() => addParticipants(values)}>Добавить участника</button>
                         </div>
                         {renderCustom}
                         <div className={style.fields_container}>
@@ -162,5 +208,5 @@ function AddAccidentPage() {
     );
 }
 
-export default withAuth(AddAccidentPage)
-// export default AddAccidentPage
+// export default withAuth(AddAccidentPage)
+export default AddAccidentPage

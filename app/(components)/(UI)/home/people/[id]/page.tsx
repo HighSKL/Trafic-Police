@@ -49,7 +49,10 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
         { title: "Улица", errorMessage: "Укажите улицу проживания", name: "Place_street", value: activeData.street_name},
         { title: "Дом", errorMessage: "Укажите дом", name: "Place_house", value: activeData.place_house},
         { title: "Квартира", errorMessage: "Укажите квартиру", name: "Place_room", value: activeData.place_room},
-        { title: "Имя владельца", errorMessage: "Укажите имя", name: "OwnerName", value: activeData.owner_name},
+        { title: "Фамилия владельца", errorMessage: "Укажите фамилию", name: "OwnerLastName", value: activeData.last_name},
+        { title: "Имя владельца", errorMessage: "Укажите имя", name: "OwnerFirstName", value: activeData.first_name},
+        { title: "Отчество владельца", errorMessage: "Укажите отчество", name: "OwnerPatronymic", value: activeData.patronymic},
+
         { title: "Номер телефона владельца", errorMessage: "Укажите номер телефона в формате +X XXX XXX XX XX", name: "PhoneNumber", value: activeData.phone_number},
         { title: "Серия паспорта", errorMessage: "Укажите серию паспорта", name: "PassportSeries", value: activeData.passport_series},
         { title: "Номер паспорта", errorMessage: "Укажите номер паспорта", name: "PassportNumber", value: activeData.passport_number},
@@ -65,7 +68,12 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
         { title: "Улица", errorMessage: "Укажите улицу проживания", name: "street_name", list: Streets, validate: /^(?!---|\s)(\S)/, value: activeData.street_name},
         { title: "Дом", errorMessage: "Укажите дом", name: "place_house", validate: /\S/, value: activeData.place_house},
         { title: "Квартира", errorMessage: "Укажите квартиру", name: "place_room", validate: /\S/, value: activeData.place_room },
-        { title: "Имя владельца", errorMessage: "Укажите имя", name: "owner_name", validate: /\S/, value: activeData.owner_name },
+        // { title: "Имя владельца", errorMessage: "Укажите имя", name: "owner_name", validate: /\S/, value: activeData.owner_name },
+
+        { title: "Фамилия владельца", errorMessage: "Укажите фамилию", name: "last_name", value: activeData.last_name},
+        { title: "Имя владельца", errorMessage: "Укажите имя", name: "first_name", value: activeData.first_name},
+        { title: "Отчество владельца", errorMessage: "Укажите отчество", name: "patronymic", value: activeData.patronymic},
+
         { title: "Номер телефона владельца", errorMessage: "Укажите номер телефона в формате +X XXX XXX XX XX", name: "phone_number", validate: /^((\+7)|(8))\d{10}$/ , value: activeData.phone_number},
         { title: "Серия паспорта", errorMessage: "Укажите серию паспорта", name: "passport_series", validate: /^\d{4}$/, value: activeData.passport_series },
         { title: "Номер паспорта", errorMessage: "Укажите номер паспорта", name: "passport_number", validate: /^\d{6}$/, value: activeData.passport_number },
@@ -97,6 +105,7 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
             editFieldsCars.forEach(async (field)=>{
                 if(field.value != values[`${field.name}`]){
                     setIsSendDataButtonDisabled(true)
+                    // console.log(field.name)
                     await ChangeDataPhys(field.name, values[`${field.name}`], id)
                     await ChangePeopleCarOwn(personChosenCars, id).then(()=>{
                         setIsSendDataButtonDisabled(false)
@@ -113,7 +122,7 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
             <div className={style.formikPrev}>
                 <Formik
                         initialValues={{ street_name: activeData.street_name, place_house: activeData.place_house, place_room: activeData.place_room,
-                        owner_name: activeData.owner_name, phone_number: activeData.phone_number, passport_series: activeData.passport_series,
+                        first_name: activeData.first_name, last_name: activeData.last_name, patronymic: activeData.patronymic, phone_number: activeData.phone_number, passport_series: activeData.passport_series,
                         passport_number: activeData.passport_number, who_passport_inssued: activeData.who_passport_inssued, data_passport_inssued: activeData.data_passport_inssued,
                         driver_lic_number: activeData.driver_lic_number, driver_lic_date_inssued: activeData.driver_lic_date_inssued }}
                         onSubmit={(values: FormikValues) => trySendRequest(values)}

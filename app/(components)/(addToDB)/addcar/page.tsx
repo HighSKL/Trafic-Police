@@ -120,5 +120,5 @@ function AddCar() {
     );
 }
 
-export default withAuth(AddCar)
-// export default AddCar
+// export default withAuth(AddCar)
+export default AddCar

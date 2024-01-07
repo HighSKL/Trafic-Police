@@ -1,5 +1,5 @@
 import { Field, FormikValues } from "formik";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { ErrorComponentWorker } from "./errorComponentWorker";
 import { validator } from "../validator";
 import { CarItemFindCarType, FindPeopleObjType, InspectorItemFindOrgType, OrganizationItemFindOrgType } from "@/app/types/types";
@@ -8,6 +8,9 @@ import FindCarBlock from "../FindCarBlock/FindCarBlock";
 import FindOrganizationBlock from "../FindOrganizationBlock/FindOrganizationBlock";
 import FindInspectorBlock from "../FindInspectorBlock/FindInspectorBlock";
 import FindPeopleBlock from "../FindPeopleBlock/FindPeopleBlock";
+import { GetPeopleByCar } from "../apiservice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/(storage)/store";
 
 interface FieldObject<Object> {
     name: string;
@@ -46,6 +49,12 @@ interface AdditionalDataObject {
     people?: {
         chosenPeople: any;
         setChosenPeople: any;
+    }
+    accident?: {
+        chosenPeople: any;
+        setChosenPeople: any;
+        chosenCars: any;
+        setChosenCars: any; 
     }
 }
 
@@ -127,7 +136,8 @@ export class FieldsWorker {
                     <FindPeopleBlock closeWindow={()=>setIsWindowOpen(false)} setChoosenItem={(item: any) => setChosenPeople(item)} />
                 }
                 <div>
-                    <p>{chosenPeople?.owner_name}</p>
+                    {chosenPeople&&<p>Серия/номер паспорта: {chosenPeople?.passport_series}/{chosenPeople?.passport_number}</p>}
+                    {chosenPeople&&<p>{chosenPeople?.first_name} {chosenPeople?.last_name}</p>}
                 </div>
             </div>
         )
@@ -241,25 +251,69 @@ export class FieldsWorker {
     }
 
     public renderPartAccidentFields<Obj>(fieldsPart: FieldObject<Obj>[], AdditionalDataObject?: AdditionalDataObject){
+
+        enum findByTypes {
+            people, car
+        }
+
+        const {candidatePeople} = useSelector((state: RootState) => ({
+            candidatePeople: state.userData.AccidentPage.candidatePeople
+        }))
+
+        const [findBy, setFindBy] = useState(findByTypes.people)
+
         return fieldsPart.map((elem) => (
             <div className="field" key={elem.name}>
                 <p className="field_title">{elem.title}</p>
                 <div className="addcarWindow_container">
+                    {elem.findPeopleNeed&&
+                    <div style={{display:'flex', cursor: 'pointer', alignItems: 'center', gap: '10px'}} onClick={()=>{setFindBy(findByTypes.people); AdditionalDataObject?.accident?.setChosenCars(null)}}>
+                        <input type="checkbox" checked={findBy === findByTypes.people} />
+                        <p>Поиск по владельцу</p>
+                    </div>}
+                    {elem.findCarNeed&&
+                        <div style={{display:'flex', cursor: 'pointer',  alignItems: 'center', gap: '10px'}} onClick={()=>{setFindBy(findByTypes.car); AdditionalDataObject?.accident?.setChosenPeople(null)}}>
+                        <input type="checkbox" checked={findBy === findByTypes.car}/>
+                        <p>Поиск по автомобилю</p>
+                    </div>}
                     {
-                        elem.findCarNeed &&
-                        this.renderFindCarWindow(AdditionalDataObject?.chosenCarsArr, AdditionalDataObject?.setPersonChosenCars)
+                        !AdditionalDataObject?.accident?.chosenPeople && elem.findCarNeed && findBy == findByTypes.car &&
+                        this.renderFindCarWindow(AdditionalDataObject?.accident?.chosenCars, AdditionalDataObject?.accident?.setChosenCars)
                     }
                     {
-                        elem.findPeopleNeed && 
-                        this.renderFindPeopleWindow(AdditionalDataObject?.people?.chosenPeople, AdditionalDataObject?.people?.setChosenPeople)
+                        !AdditionalDataObject?.accident?.chosenCars && findBy == findByTypes.people && elem.findPeopleNeed && 
+                        this.renderFindPeopleWindow(AdditionalDataObject?.accident?.chosenPeople, AdditionalDataObject?.accident?.setChosenPeople)
                     }
                     {
-                    
-                        elem.list&&
+                        elem.findPeopleNeed && elem.list && findBy == findByTypes.car && !AdditionalDataObject?.accident?.chosenCars && 
+                        <>Владелец не указан</>
+                    }
+                    {
+                        elem.findPeopleNeed && candidatePeople &&
+                        <>Серия/номер паспорта: {candidatePeople.passport_series}, {candidatePeople.passport_series}</>
+                    }
+    
+                    {/* {
+                        elem.findPeopleNeed && elem.list && findBy == findByTypes.car && AdditionalDataObject?.accident?.chosenCars && AdditionalDataObject?.accident?.chosenPeople &&
+                        <>
+                            <p>Серия/номер паспорта: {AdditionalDataObject?.accident?.chosenPeople?.passport_series}/{AdditionalDataObject?.accident?.chosenPeople?.passport_number}</p>
+                            <p>{AdditionalDataObject?.accident?.chosenPeople?.first_name} {AdditionalDataObject?.accident?.chosenPeople?.last_name}</p>
+                        </>
+                    } */}
+                    {
+                        elem.findCarNeed && elem.list && findBy == findByTypes.people &&
                         <Field as="select" name={elem.name}>{elem.list.map((element:any) => (
                             <option value={element} key={element}>{element}</option>
                         ))}</Field>
                     }
+                    {/* {
+                    
+                        AdditionalDataObject?.accident?.chosenPeople === null ||
+                        AdditionalDataObject?.accident?.chosenCars === null && elem.list&&
+                        <Field as="select" name={elem.name}>{elem.list.map((element:any) => (
+                            <option value={element} key={element}>{element}</option>
+                        ))}</Field>
+                    } */}
                     {
                         !elem.findCarNeed && !elem.findInspectorNeed && !elem.findPeopleNeed && !elem.list && !elem.custom &&
                         <Field name={elem.name} className="input" />

@@ -5,14 +5,14 @@ import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/(storage)/store';
 import { setChosenData, setInspectionData, setPeopleData } from '@/app/(storage)/reducers/showDataReducer';
-import { ChangeDataCars, ChangeDataInspection, ChangeDataPhys, GetAllPeopleCars, GetCurrCompanyDriver, GetCurrPeople, GetCurrentInspection, deleteCar, deletePeoplePhys, getCurrCar } from '@/app/modules/apiservice';
+import { ChangeDataCars, ChangeDataInspection, ChangeDataPhys, GetAllPeopleCars, GetCompanys, GetCurrCompanyDriver, GetCurrPeople, GetCurrentInspection, deleteCar, deletePeoplePhys, getCurrCar } from '@/app/modules/apiservice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { EditFieldsWorker } from '@/app/modules/models/editFieldsWorker';
 import { setAddPeopleErrors } from '@/app/(storage)/reducers/errorsReducer';
 import { setModels } from '@/app/(storage)/reducers/listsReducer';
 import { Formik, Form, FormikValues } from 'formik';
-import { CarItemFindCarType, InspectorItemFindOrgType } from '@/app/types/types';
+import { CarItemFindCarType, InspectorItemFindOrgType, OrganizationItemFindOrgType } from '@/app/types/types';
 
 
 export default function ShowInfoPeopleBlock({ params: { id } }: any) {
@@ -37,10 +37,14 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
 
     const [personChosenCars, setPersonChosenCars] = useState<CarItemFindCarType[]>([])
 
+    const [personChoosenOrganization, setPersonChosenOrganization] = useState<OrganizationItemFindOrgType>()
+
     useEffect(() => {
         (async () => {
             const peopleData = await GetCurrCompanyDriver(id).then(res => res.data)
             dispatch(setPeopleData(peopleData))
+            const companys = await GetCompanys(id).then(res => res.data)
+            setPersonChosenCars(companys)
             // const cars = await GetAllPeopleCars(activeData.id).then(res => res.data)
             // console.log(cars)
             // setPersonChosenCars(cars)
@@ -49,11 +53,15 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
     }, [])
 
     const fields = [
-        // { title: "Автомобили во владении", errorMessage: "Укажите автомобили во владении", name: "OwnCar", carsList: personChosenCars},
+        { title: "Автомобили во владении", errorMessage: "Укажите автомобили во владении", name: "OwnCar", value: personChoosenOrganization},
         { title: "Улица", errorMessage: "Укажите улицу проживания", name: "Place_street", value: activeData.street_name},
         { title: "Дом", errorMessage: "Укажите дом", name: "Place_house", value: activeData.place_house},
         { title: "Квартира", errorMessage: "Укажите квартиру", name: "Place_room", value: activeData.place_room},
-        { title: "Имя владельца", errorMessage: "Укажите имя", name: "OwnerName", value: activeData.owner_name},
+
+        { title: "Фамилия владельца", errorMessage: "Укажите фамилию", name: "LastName", value: activeData.last_name},
+        { title: "Имя владельца", errorMessage: "Укажите имя", name: "FirstName", value: activeData.first_name},
+        { title: "Отчество владельца", errorMessage: "Укажите отчество", name: "Pat", value: activeData.patronymic},
+
         { title: "Номер телефона владельца", errorMessage: "Укажите номер телефона в формате +X XXX XXX XX XX", name: "PhoneNumber", value: activeData.phone_number},
         { title: "Серия паспорта", errorMessage: "Укажите серию паспорта", name: "PassportSeries", value: activeData.passport_series},
         { title: "Номер паспорта", errorMessage: "Укажите номер паспорта", name: "PassportNumber", value: activeData.passport_number},
@@ -65,11 +73,16 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
     ]
 
     const editFieldsCars = [
-        // { title: "Автомобили во владении", errorMessage: "Укажите автомобили во владении", name: "OwnCar", findCarNeed: true, elementController: {need: true, controller: personChosenCars}},
+        { title: "Водитель в организации", errorMessage: "Укажите орагинизацию", name: "WhereWork", findOrganizationNeed: true, elementController: {need: true, controller: personChoosenOrganization}, value: personChoosenOrganization},
         { title: "Улица", errorMessage: "Укажите улицу проживания", name: "street_name", list: Streets, validate: /^(?!---|\s)(\S)/, value: activeData.street_name},
         { title: "Дом", errorMessage: "Укажите дом", name: "place_house", validate: /\S/, value: activeData.place_house},
         { title: "Квартира", errorMessage: "Укажите квартиру", name: "place_room", validate: /\S/, value: activeData.place_room },
-        { title: "Имя владельца", errorMessage: "Укажите имя", name: "owner_name", validate: /\S/, value: activeData.owner_name },
+
+
+        { title: "Фамилия владельца", errorMessage: "Укажите фамилию", name: "last_name", value: activeData.last_name, validate: /\S/},
+        { title: "Имя владельца", errorMessage: "Укажите имя", name: "first_name", value: activeData.first_name, validate: /\S/},
+        { title: "Отчество владельца", errorMessage: "Укажите отчество", name: "patronymic", value: activeData.patronymic, validate: /\S/},
+
         { title: "Номер телефона владельца", errorMessage: "Укажите номер телефона в формате +X XXX XXX XX XX", name: "phone_number", validate: /^((\+7)|(8))\d{10}$/ , value: activeData.phone_number},
         { title: "Серия паспорта", errorMessage: "Укажите серию паспорта", name: "passport_series", validate: /^\d{4}$/, value: activeData.passport_series },
         { title: "Номер паспорта", errorMessage: "Укажите номер паспорта", name: "passport_number", validate: /^\d{6}$/, value: activeData.passport_number },
@@ -79,12 +92,6 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
         { title: "Дата выдачи водительского удостоверения", errorMessage: "Укажите дату выдачи ВУ", name: "driver_lic_date_inssued", validate: /\S/, date: true, value: activeData.driver_lic_date_inssued },
         // { title: "Категории", errorMessage: "Укажите категории", name: "Categories", categories: Categories, elementController: {need: true, controller: activeCategory} }
     ]
-
-    // const editFieldsInspect = [
-    //     { title: "Инспектор проводивший ТО", errorMessage: "Инспектор проводивший ТО", name: "inspector_id", findInspectorNeed: true, elementController: {need: true, controller: chosenInspector}, value: activeInspData?.inspector_name },
-    // ]
-    
-    
 
     const deleteData = async () => {
         setIsSendDataButtonDisabled(true)
@@ -101,6 +108,7 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
             editFieldsCars.forEach(async (field)=>{
                 if(field.value != values[`${field.name}`]){
                     setIsSendDataButtonDisabled(true)
+                    
                     await ChangeDataPhys(field.name, values[`${field.name}`], id).then(()=>{
                         setIsSendDataButtonDisabled(false)
                         router.push('/home')
@@ -108,23 +116,6 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
                     })
                 }
             })
-            // editFieldsInspect.forEach(async (field)=>{
-            //     if((chosenInspector?.id !== activeInspData.inspector_id)&&field.findInspectorNeed){
-            //         setIsSendDataButtonDisabled(true)
-            //         await ChangeDataInspection(field.name, chosenInspector?.id, id).then(()=>{
-            //             setIsSendDataButtonDisabled(false)
-            //             router.push('/home')
-            //             setEditMode(false)
-            //         })
-            //     }
-            //     if((field.value != values[`${field.name}`])&&!field.findInspectorNeed){
-            //         await ChangeDataInspection(field.name, values[`${field.name}`], id).then(()=>{
-            //             setIsSendDataButtonDisabled(false)
-            //             router.push('/home')
-            //             setEditMode(false)
-            //         })
-            //     }
-            // })
         })
     }
 
@@ -133,7 +124,7 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
             <div className={style.formikPrev}>
                 <Formik
                         initialValues={{ street_name: activeData.street_name, place_house: activeData.place_house, place_room: activeData.place_room,
-                        owner_name: activeData.owner_name, phone_number: activeData.phone_number, passport_series: activeData.passport_series,
+                        first_name: activeData.first_name, last_name: activeData.last_name, patronymic: activeData.patronymic, phone_number: activeData.phone_number, passport_series: activeData.passport_series,
                         passport_number: activeData.passport_number, who_passport_inssued: activeData.who_passport_inssued, data_passport_inssued: activeData.data_passport_inssued,
                         driver_lic_number: activeData.driver_lic_number, driver_lic_date_inssued: activeData.driver_lic_date_inssued }}
                         onSubmit={(values: FormikValues) => trySendRequest(values)}
@@ -141,7 +132,7 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
                         {() => (
                             <Form className={style.from_container} id={style.form}>
                                 <div className={style.fields_container}>
-                                    {EditWorker.renderCarsFields(editFieldsCars)}
+                                    {EditWorker.renderCarsFields(editFieldsCars, {chosenOrganization: personChoosenOrganization,setPersonChosenOrganization: setPersonChosenOrganization})}
                                     {/* {EditWorker.renderCarsFields(editFieldsInspect, {chosenInspector: chosenInspector, setChosenInspector: setChosenInspector})} */}
                                 </div>
                                 <button className={style.button} type="submit" disabled={isSendDataButtonDisabled}>Применить изменения</button>
@@ -161,7 +152,7 @@ export default function ShowInfoPeopleBlock({ params: { id } }: any) {
             </div>
             {editMode&&fieldsFormikComponent()}
             <div className={style.fields_container}>
-                {!editMode&&RenderWorker.renderPeoplesData(fields)}
+                {!editMode&&RenderWorker.renderPeoplesData(editFieldsCars)}
             </div>
         </>
 

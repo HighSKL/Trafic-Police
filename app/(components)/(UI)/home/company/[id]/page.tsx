@@ -51,7 +51,11 @@ export default function ShowInfoCompanyBlock({ params: { id } }: any) {
         { title: "Дом", errorMessage: "Укажите дом", name: "Place_house", value: activeData.place_house },
         { title: "Квартира/Офис", errorMessage: "Укажите квартиру/номер офиса", name: "Place_room", value: activeData.place_room },
         { title: "Название организации", errorMessage: "Укажите название организации", name: "Organization_name", value: activeData.organization_name },
-        { title: "ФИО директора организации", errorMessage: "Укажите имя директора", name: "DirectorName", value: activeData.director_name },
+        
+        { title: "Фамилия директора организации", errorMessage: "Укажите фамилию директора", name: "director_first_name", value: activeData.director_first_name },
+        { title: "Имя директора организации", errorMessage: "Укажите имя директора", name: "director_last_name", value: activeData.director_last_name },
+        { title: "Отчество директора организации", errorMessage: "Укажите отчество директора", name: "director_patronymic_name", value: activeData.director_patronymic_name },
+
         { title: "Номер телефона директора организации", errorMessage: "Укажите номер телефона директора в формате +X XXX XXX XX XX", name: "PhoneNumber", value: activeData.director_phone_number },
     ]
 
@@ -61,14 +65,13 @@ export default function ShowInfoCompanyBlock({ params: { id } }: any) {
         { title: "Дом", errorMessage: "Укажите дом", name: "place_house", value: activeData.place_house },
         { title: "Квартира/Офис", errorMessage: "Укажите квартиру/номер офиса", name: "place_room", value: activeData.place_room },
         { title: "Название организации", errorMessage: "Укажите название организации", name: "organization_name", value: activeData.organization_name },
-        { title: "ФИО директора организации", errorMessage: "Укажите имя директора", name: "director_name", value: activeData.director_name },
+        
+        { title: "Фамилия директора организации", errorMessage: "Укажите фамилию директора", name: "director_first_name", value: activeData.director_first_name },
+        { title: "Имя директора организации", errorMessage: "Укажите имя директора", name: "director_last_name", value: activeData.director_last_name },
+        { title: "Отчество директора организации", errorMessage: "Укажите отчество директора", name: "director_patronymic_name", value: activeData.director_patronymic_name },
+
         { title: "Номер телефона директора организации", errorMessage: "Укажите номер телефона директора в формате +X XXX XXX XX XX", name: "director_phone_number", value: activeData.director_phone_number },
     ]
-
-    // const editFieldsInspect = [
-    //     { title: "Инспектор проводивший ТО", errorMessage: "Инспектор проводивший ТО", name: "inspector_id", findInspectorNeed: true, elementController: {need: true, controller: chosenInspector}, value: activeInspData?.inspector_name },
-    // ]
-    
     
 
     const deleteData = async () => {
@@ -106,7 +109,8 @@ export default function ShowInfoCompanyBlock({ params: { id } }: any) {
             <div className={style.formikPrev}>
                 <Formik
                         initialValues={{ street_name: activeData.street_name, place_house: activeData.place_house, place_room: activeData.place_room,
-                        organization_name: activeData.organization_name, director_name: activeData.director_name, director_phone_number: activeData.director_phone_number}}
+                        organization_name: activeData.organization_name, director_phone_number: activeData.director_phone_number,
+                        director_first_name: activeData.director_first_name, director_last_name: activeData.director_last_name, director_patronymic_name: activeData.director_patronymic_name }}
                         onSubmit={(values: FormikValues) => trySendRequest(values)}
                     >
                         {() => (
